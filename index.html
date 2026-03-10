@@ -1,0 +1,3120 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fujimi Sushi & Wok</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== THEMES ===== */
+[data-theme="dark"]{--bg:#0d0d0d;--bg2:#1a1a1a;--bg3:#111;--text:#f7f3ec;--text2:rgba(247,243,236,.55);--text3:rgba(247,243,236,.3);--acc:#c0392b;--acc2:#d4a847;--bdr:rgba(247,243,236,.08);--card:#1a1a1a;}
+[data-theme="light"]{--bg:#f5f0e8;--bg2:#fffdf8;--bg3:#e8e2d8;--text:#160c03;--text2:rgba(22,12,3,.6);--text3:rgba(22,12,3,.38);--acc:#c0392b;--acc2:#9a6f00;--bdr:rgba(22,12,3,.1);--card:#fffdf8;}
+[data-theme="ocean"]{--bg:#030d16;--bg2:#071829;--bg3:#050f1c;--text:#ddf2ff;--text2:rgba(221,242,255,.55);--text3:rgba(221,242,255,.3);--acc:#0288d1;--acc2:#00bcd4;--bdr:rgba(2,136,209,.15);--card:#071829;}
+[data-theme="forest"]{--bg:#060e07;--bg2:#0d1e0e;--bg3:#08120a;--text:#e4f4dc;--text2:rgba(228,244,220,.55);--text3:rgba(228,244,220,.3);--acc:#2e7d32;--acc2:#8bc34a;--bdr:rgba(46,125,50,.15);--card:#0d1e0e;}
+[data-theme="luxury"]{--bg:#090705;--bg2:#140e08;--bg3:#0c0906;--text:#f5e6c8;--text2:rgba(245,230,200,.55);--text3:rgba(245,230,200,.3);--acc:#b8860b;--acc2:#e8c84a;--bdr:rgba(184,134,11,.15);--card:#140e08;}
+[data-theme="sakura"]{--bg:#0a0508;--bg2:#160b10;--bg3:#0e0609;--text:#fce8f0;--text2:rgba(252,232,240,.55);--text3:rgba(252,232,240,.3);--acc:#c2185b;--acc2:#f48fb1;--bdr:rgba(194,24,91,.15);--card:#160b10;}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden;cursor:default;transition:background .5s,color .5s;max-width:100vw;}
+
+/* ===== TEMA DESENLERİ ===== */
+#theme-pattern{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;transition:opacity .5s;}
+#theme-pattern svg{position:absolute;pointer-events:none;}
+#sakura-canvas-wrap{position:fixed;inset:0;pointer-events:none;z-index:0;}
+
+[data-theme="sakura"] #theme-pattern { opacity:1; }
+[data-theme="dark"] #theme-pattern { opacity:0.03; }
+[data-theme="light"] #theme-pattern { opacity:0.06; }
+[data-theme="ocean"] #theme-pattern { opacity:0.04; }
+[data-theme="forest"] #theme-pattern { opacity:0.04; }
+[data-theme="luxury"] #theme-pattern { opacity:0.04; }
+
+/* Sakura petal animation */
+@keyframes sakura-fall { 0%{transform:translateY(-20px) rotate(0deg);opacity:0;} 10%{opacity:1;} 90%{opacity:.7;} 100%{transform:translateY(100vh) rotate(720deg);opacity:0;} }
+@keyframes float-gentle { 0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(-12px) rotate(5deg);} }
+@keyframes wave-drift { 0%,100%{transform:translateX(0) rotate(0deg);} 50%{transform:translateX(8px) rotate(3deg);} }
+@keyframes leaf-sway { 0%,100%{transform:rotate(-5deg);} 50%{transform:rotate(5deg);} }
+@keyframes gold-shimmer { 0%,100%{opacity:.3;} 50%{opacity:.7;} }
+
+.sakura-petal { position:fixed; pointer-events:none; z-index:0; animation: sakura-fall linear infinite; }
+
+/* ===== KÖŞE SÜSLEMELERİ ===== */
+.corner-deco{position:fixed;pointer-events:none;z-index:0;transition:opacity .5s;}
+.corner-tl{top:0;left:0;}
+.corner-tr{top:0;right:0;transform:scaleX(-1);}
+.corner-bl{bottom:0;left:0;transform:scaleY(-1);}
+.corner-br{bottom:0;right:0;transform:scale(-1);}
+[data-theme="sakura"] .corner-deco{opacity:.55;}
+[data-theme="dark"] .corner-deco{opacity:.06;}
+[data-theme="light"] .corner-deco{opacity:.1;}
+[data-theme="ocean"] .corner-deco{opacity:.1;}
+[data-theme="forest"] .corner-deco{opacity:.1;}
+[data-theme="luxury"] .corner-deco{opacity:.1;}
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:rgba(0,0,0,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--bdr);}
+.logo{text-decoration:none;display:flex;flex-direction:column;line-height:1;}
+.logo-m{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--text);letter-spacing:.04em;}
+.logo-m span{color:var(--acc);}
+.logo-s{font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--acc2);margin-top:2px;}
+.nav-mid{display:flex;gap:30px;list-style:none;}
+.nav-mid a{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text2);text-decoration:none;font-weight:300;transition:color .3s;}
+.nav-mid a:hover{color:var(--acc2);}
+.nav-r{display:flex;align-items:center;gap:8px;}
+.nb{padding:9px 18px;font-size:10px;letter-spacing:.13em;text-transform:uppercase;font-weight:500;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
+.nb-ghost{background:transparent;color:var(--text2);border:1px solid var(--bdr);}
+.nb-ghost:hover{border-color:var(--acc2);color:var(--acc2);}
+.nb-red{background:var(--acc);color:#fff;}
+.nb-red:hover{opacity:.85;}
+.nb-gold{background:var(--acc2);color:var(--bg);}
+.nb-gold:hover{opacity:.85;}
+#nav-loggedin{display:none;align-items:center;gap:8px;}
+#nav-uname{font-size:11px;color:var(--acc2);letter-spacing:.06em;font-weight:500;}
+
+/* ===== BRANCH BAR (fixed below nav) ===== */
+#branch-bar{position:fixed;top:64px;left:0;right:0;z-index:490;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:0 48px;display:flex;align-items:center;gap:0;height:44px;}
+.bb-label{font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--text3);white-space:nowrap;margin-right:16px;flex-shrink:0;}
+.bb-branches{display:flex;gap:0;flex:1;overflow-x:auto;scrollbar-width:none;}
+.bb-branches::-webkit-scrollbar{display:none;}
+.bb-btn{padding:0 20px;height:44px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-family:'Outfit',sans-serif;font-weight:400;cursor:pointer;border:none;background:transparent;color:var(--text3);transition:all .3s;white-space:nowrap;border-bottom:2px solid transparent;position:relative;}
+.bb-btn:hover{color:var(--text);}
+.bb-btn.active{color:var(--acc2);border-bottom-color:var(--acc2);}
+.bb-btn.active::before{content:'✓';margin-right:6px;font-size:9px;}
+.bb-warn{font-size:10px;color:var(--acc);letter-spacing:.06em;margin-left:auto;white-space:nowrap;display:none;align-items:center;gap:6px;animation:pulse 1.5s ease-in-out infinite;}
+.bb-warn.show{display:flex;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* ===== CAMPAIGN STRIP ===== */
+#camp-strip{overflow:hidden;height:0;transition:height .4s;background:var(--acc);}
+#camp-strip.on{height:52px;}
+.camp-track{display:inline-flex;align-items:center;animation:marquee 28s linear infinite;height:52px;}
+.camp-item{display:flex;align-items:center;gap:12px;padding:0 44px;white-space:nowrap;}
+.camp-thumb{width:34px;height:34px;object-fit:cover;border-radius:3px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.camp-thumb img{width:100%;height:100%;object-fit:cover;border-radius:3px;}
+.camp-text{font-size:13px;color:#fff;letter-spacing:.08em;font-weight:400;}
+.camp-price{font-size:13px;color:rgba(255,255,255,.75);margin-left:4px;}
+.camp-sep{color:rgba(255,255,255,.3);font-size:18px;padding:0 12px;}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;position:relative;display:flex;align-items:flex-end;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 35%,rgba(192,57,43,.28) 0%,transparent 50%),radial-gradient(ellipse at 20% 70%,rgba(212,168,71,.14) 0%,transparent 45%),radial-gradient(ellipse at 50% 10%,rgba(192,57,43,.10) 0%,transparent 40%),var(--bg);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(247,243,236,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(247,243,236,.07) 1px,transparent 1px);background-size:72px 72px;}
+.hero-kanji{position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:clamp(180px,25vw,340px);font-weight:900;color:rgba(247,243,236,.045);line-height:1;user-select:none;pointer-events:none;}
+.hero-content{position:relative;z-index:2;padding:0 72px 80px;max-width:860px;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:12px;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--acc2);font-weight:400;margin-bottom:24px;opacity:0;animation:fadeUp .8s .2s forwards;}
+.hero-eyebrow::before{content:'';width:36px;height:1px;background:var(--acc2);}
+.hero-h1{font-family:'Playfair Display',serif;font-size:clamp(58px,8.5vw,120px);font-weight:900;line-height:.92;letter-spacing:-.02em;margin-bottom:10px;opacity:0;animation:fadeUp .9s .4s forwards;}
+.hero-h1 i{color:var(--acc);font-style:italic;}
+.hero-h1b{font-family:'Playfair Display',serif;font-size:clamp(32px,4.5vw,64px);font-weight:700;font-style:italic;color:var(--acc2);line-height:1;margin-bottom:36px;opacity:0;animation:fadeUp .9s .55s forwards;}
+.hero-desc{font-size:14px;line-height:1.85;color:var(--text2);font-weight:200;max-width:400px;margin-bottom:44px;opacity:0;animation:fadeUp .8s .7s forwards;}
+.hero-acts{display:flex;align-items:center;gap:28px;opacity:0;animation:fadeUp .8s .85s forwards;}
+.btn-main{background:var(--acc);color:#fff;padding:17px 40px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;font-weight:500;transition:all .3s;display:inline-block;}
+.btn-main:hover{background:var(--acc2);color:var(--bg);transform:translateY(-2px);}
+.btn-ghost{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text2);text-decoration:none;font-weight:300;display:flex;align-items:center;gap:8px;transition:color .3s;}
+.btn-ghost::after{content:'↓';transition:transform .3s;}
+.btn-ghost:hover{color:var(--text);}
+.btn-ghost:hover::after{transform:translateY(4px);}
+.hero-emojis{position:absolute;right:72px;top:50%;transform:translateY(-45%);z-index:2;display:flex;flex-direction:column;gap:16px;opacity:0;animation:fadeIn 1s 1.1s forwards;}
+.hei{font-size:68px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.5));animation:float 5s ease-in-out infinite;}
+.hei:nth-child(2){animation-delay:1.5s;font-size:52px;margin-left:36px;}
+.hei:nth-child(3){animation-delay:3s;font-size:60px;}
+
+/* ===== TICKER ===== */
+.ticker{background:var(--acc);padding:12px 0;overflow:hidden;white-space:nowrap;}
+.ticker-track{display:inline-flex;animation:marquee 22s linear infinite;}
+.ti{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8);font-weight:300;padding:0 36px;}
+.td{color:var(--acc2);}
+
+/* ===== ABOUT ===== */
+.about{display:grid;grid-template-columns:1fr 1fr;min-height:65vh;}
+.about-l{background:var(--bg2);padding:90px 72px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--bdr);}
+.sec-label{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--acc);margin-bottom:20px;font-weight:400;}
+.about-title{font-family:'Playfair Display',serif;font-size:clamp(32px,3.2vw,48px);font-weight:700;line-height:1.15;margin-bottom:24px;}
+.about-title em{color:var(--acc2);font-style:italic;}
+.about-text{font-size:14px;line-height:1.85;color:var(--text2);font-weight:200;margin-bottom:44px;}
+.stats{display:flex;gap:44px;}
+.snum{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;color:var(--acc2);line-height:1;}
+.slbl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-top:5px;}
+.about-r{background:var(--bg3);display:flex;align-items:center;justify-content:center;padding:60px;position:relative;overflow:hidden;}
+.about-r::before{content:'富士見';position:absolute;font-family:'Playfair Display',serif;font-size:160px;font-weight:900;color:rgba(247,243,236,.025);top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;}
+.big-em{font-size:130px;display:block;filter:drop-shadow(0 16px 44px rgba(192,57,43,.35));animation:float 4.5s ease-in-out infinite;position:relative;z-index:1;}
+.ring{position:absolute;border-radius:50%;border:1px solid;top:50%;left:50%;transform:translate(-50%,-50%);}
+.r1{width:210px;height:210px;border-color:rgba(212,168,71,.12);}
+.r2{width:290px;height:290px;border-color:rgba(192,57,43,.08);}
+.r3{width:370px;height:370px;border-color:rgba(247,243,236,.04);}
+
+/* ===== MENU ===== */
+.menu-sec{padding:100px 72px;background:var(--bg);}
+
+.menu-title{font-family:'Playfair Display',serif;font-size:clamp(40px,5vw,64px);font-weight:900;line-height:.95;}
+.menu-title em{color:var(--acc);font-style:italic;}
+.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--bdr);}
+.mcard{background:var(--card);overflow:hidden;transition:background .3s;position:relative;cursor:pointer;display:flex;flex-direction:column;}
+.mcard:hover{background:var(--bg2);}
+.mcard::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--acc);transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.mcard:hover::after{transform:scaleX(1);}
+.mcard-img{width:100%;height:100px;background:var(--bg3);font-size:36px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.mcard-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.mcard-body{padding:10px 12px 12px;display:flex;flex-direction:column;flex:1;}
+.mcard-info{flex:1;}
+.mcard-cat{font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:var(--acc);font-weight:400;margin-bottom:3px;}
+.mcard-name{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;line-height:1.25;margin-bottom:2px;}
+.mcard-desc{font-size:10px;line-height:1.4;color:var(--text2);font-weight:200;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.mcard-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;}
+.mcard-price{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--acc2);}
+.mcard-unit{font-size:8px;color:var(--text3);font-family:'Outfit',sans-serif;font-weight:200;}
+.add-to-cart{background:var(--acc);color:#fff;border:none;padding:5px 10px;font-size:8px;letter-spacing:.1em;text-transform:uppercase;font-family:'Outfit',sans-serif;cursor:pointer;transition:background .3s;font-weight:600;white-space:nowrap;}
+.add-to-cart:hover{background:var(--acc2);color:var(--bg);}
+
+/* ===== RESERVATION ===== */
+.res-sec{background:var(--acc);padding:100px 72px;text-align:center;position:relative;overflow:hidden;width:100%;box-sizing:border-box;}
+.res-sec::before{content:'FUJIMI';position:absolute;font-family:'Playfair Display',serif;font-size:200px;font-weight:900;color:rgba(0,0,0,.1);top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;user-select:none;pointer-events:none;z-index:0;}
+.res-sec>*{position:relative;z-index:1;}
+.res-lbl{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:16px;}
+.res-title{font-family:'Playfair Display',serif;font-size:clamp(40px,5.5vw,72px);font-weight:900;line-height:1;margin-bottom:20px;}
+.res-title em{font-style:italic;color:rgba(255,255,255,.65);}
+.res-txt{font-size:14px;color:rgba(255,255,255,.7);font-weight:200;margin-bottom:44px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.8;}
+
+.res-submit{background:#000;color:#fff;border:none;padding:16px 32px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-family:'Outfit',sans-serif;font-weight:500;cursor:pointer;transition:background .3s;}
+.res-submit:hover{background:var(--acc2);color:var(--bg);}
+
+/* ===== FOOTER ===== */
+footer{background:#040404;padding:72px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:52px;border-top:1px solid var(--bdr);}
+.fl-main{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;margin-bottom:4px;}
+.fl-main span{color:var(--acc);}
+.fl-sub{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--acc2);margin-bottom:18px;}
+.fl-desc{font-size:12px;line-height:1.8;color:var(--text3);font-weight:200;max-width:240px;}
+.fc-title{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--acc);margin-bottom:18px;font-weight:400;}
+.fc-links{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.fc-links a{font-size:12px;color:var(--text3);text-decoration:none;font-weight:200;transition:color .3s;}
+.fc-links a:hover{color:var(--acc2);}
+.foot-bot{background:#020202;padding:20px 72px;border-top:1px solid rgba(247,243,236,.04);display:flex;justify-content:space-between;align-items:center;}
+.foot-copy{font-size:10px;color:rgba(247,243,236,.15);font-weight:200;}
+.foot-soc{display:flex;gap:18px;}
+.foot-soc a{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(247,243,236,.25);text-decoration:none;transition:color .3s;}
+.foot-soc a:hover{color:var(--acc2);}
+
+/* ===== CORNER PANEL BUTTON ===== */
+#corner-btn{position:fixed;bottom:24px;right:24px;z-index:600;display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+.cbtn{padding:12px 20px;font-size:10px;letter-spacing:.13em;text-transform:uppercase;font-family:'Outfit',sans-serif;font-weight:600;cursor:pointer;border:none;transition:all .3s;box-shadow:0 4px 20px rgba(0,0,0,.6);display:flex;align-items:center;gap:7px;}
+.cbtn-gold{background:var(--acc2);color:var(--bg);}
+.cbtn-gold:hover{opacity:.85;}
+.cbtn-red{background:var(--acc);color:#fff;}
+.cbtn-red:hover{opacity:.85;}
+.cbtn-dark{background:#222;color:var(--text2);border:1px solid var(--bdr);}
+.cbtn-dark:hover{background:var(--bg2);}
+
+/* ===== MODALS ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:700;backdrop-filter:blur(8px);align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);width:460px;max-width:95vw;max-height:90vh;overflow-y:auto;border:1px solid var(--bdr);}
+.modal-hd{background:var(--acc);padding:24px 28px;display:flex;justify-content:space-between;align-items:center;}
+.modal-hd h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;}
+.modal-hd p{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.65);}
+.modal-close{background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff;width:32px;height:32px;font-size:16px;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;}
+.modal-close:hover{background:rgba(255,255,255,.1);}
+.modal-body{padding:28px;}
+.modal-tabs{display:flex;gap:0;margin-bottom:24px;border:1px solid var(--bdr);}
+.mtab{flex:1;padding:12px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:transparent;border:none;color:var(--text2);cursor:pointer;font-family:'Outfit',sans-serif;font-weight:400;transition:all .3s;}
+.mtab.active{background:var(--acc);color:#fff;}
+.mfield{margin-bottom:16px;}
+.mfield label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:7px;}
+.mfield input,.mfield select{width:100%;background:var(--bg3);border:1px solid var(--bdr);color:var(--text);padding:12px 14px;font-size:13px;font-family:'Outfit',sans-serif;font-weight:300;outline:none;transition:border-color .3s;}
+.mfield input:focus,.mfield select:focus{border-color:var(--acc);}
+.mfield select option{background:var(--bg2);}
+.mbtn{width:100%;padding:14px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600;transition:all .3s;margin-top:8px;}
+.mbtn-red{background:var(--acc);color:#fff;}
+.mbtn-red:hover{opacity:.85;}
+.mbtn-gold{background:var(--acc2);color:var(--bg);}
+.mbtn-gold:hover{opacity:.85;}
+.merr{font-size:12px;color:#e74c3c;margin-top:10px;padding:10px;background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.2);display:none;}
+.mok{font-size:12px;color:#2ecc71;margin-top:10px;padding:10px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);display:none;}
+.mdivider{border:none;border-top:1px solid var(--bdr);margin:20px 0;}
+.minfo{font-size:12px;color:var(--text3);line-height:1.7;font-weight:200;}
+
+/* ===== ADMIN PANEL ===== */
+#admin-panel-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:800;backdrop-filter:blur(10px);align-items:flex-start;justify-content:flex-end;padding:0;}
+#admin-panel-overlay.open{display:flex;}
+#admin-panel{background:var(--bg2);width:820px;max-width:98vw;height:100vh;overflow-y:auto;overflow-x:hidden;border-left:1px solid var(--bdr);display:flex;flex-direction:column;}
+.ap-hd{background:var(--acc);padding:22px 28px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.ap-hd-l h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;}
+.ap-hd-l p{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-top:2px;}
+.ap-close{background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;font-family:'Outfit',sans-serif;}
+.ap-close:hover{background:rgba(255,255,255,.1);}
+
+/* Branch switcher in admin */
+.ap-branches{display:flex;gap:8px;padding:16px 28px;background:var(--bg3);border-bottom:1px solid var(--bdr);flex-wrap:wrap;align-items:center;flex-shrink:0;}
+.ap-br-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-right:4px;}
+.br-switch-btn{padding:8px 18px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-family:'Outfit',sans-serif;font-weight:500;cursor:pointer;border:1px solid var(--bdr);background:transparent;color:var(--text2);transition:all .3s;}
+.br-switch-btn:hover,.br-switch-btn.active{background:var(--acc);border-color:var(--acc);color:#fff;}
+.br-add-btn{padding:8px 14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-family:'Outfit',sans-serif;cursor:pointer;border:1px dashed var(--acc2);background:transparent;color:var(--acc2);transition:all .3s;margin-left:auto;}
+.br-add-btn:hover{background:var(--acc2);color:var(--bg);}
+
+.ap-tabs{display:flex;gap:0;border-bottom:1px solid var(--bdr);flex-shrink:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.aptab{flex-shrink:0;padding:14px 12px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;background:transparent;border:none;color:var(--text3);cursor:pointer;font-family:'Outfit',sans-serif;transition:all .3s;border-bottom:2px solid transparent;white-space:nowrap;}
+.aptab.active{color:var(--acc);border-bottom-color:var(--acc);}
+.ap-body{padding:24px 28px;flex:1;}
+.ap-section{display:none;}
+.ap-section.active{display:block;}
+.ap-sec-title{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--acc2);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--bdr);}
+.ap-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.ap-row.full{grid-template-columns:1fr;}
+.ap-f{display:flex;flex-direction:column;gap:6px;}
+.ap-f label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);}
+.ap-f input,.ap-f textarea,.ap-f select{background:var(--bg3);border:1px solid var(--bdr);color:var(--text);padding:10px 13px;font-size:12px;font-family:'Outfit',sans-serif;font-weight:300;outline:none;transition:border-color .3s;width:100%;}
+.ap-f input:focus,.ap-f textarea:focus,.ap-f select:focus{border-color:var(--acc);}
+.ap-f textarea{resize:vertical;min-height:65px;}
+.ap-f select option{background:var(--bg2);}
+.ap-btn{padding:12px 24px;font-size:10px;letter-spacing:.13em;text-transform:uppercase;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600;transition:all .3s;}
+.ap-btn-red{background:var(--acc);color:#fff;}
+.ap-btn-red:hover{opacity:.85;}
+.ap-btn-gold{background:var(--acc2);color:var(--bg);}
+.ap-btn-gold:hover{opacity:.85;}
+.ap-btn-dark{background:var(--bg3);color:var(--text2);border:1px solid var(--bdr);}
+.ap-btn-dark:hover{border-color:var(--acc);}
+.ap-save-bar{display:flex;gap:10px;margin-top:20px;padding-top:20px;border-top:1px solid var(--bdr);}
+
+/* Menu item editor */
+.mei{background:var(--bg3);padding:16px;margin-bottom:10px;border:1px solid var(--bdr);border-left:3px solid var(--acc);position:relative;}
+.mei-hd{display:grid;grid-template-columns:80px 1fr 1fr 80px 32px;gap:10px;align-items:end;margin-bottom:10px;}
+.mei-img-preview{width:80px;height:65px;object-fit:cover;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:28px;border:1px solid var(--bdr);cursor:pointer;overflow:hidden;position:relative;}
+.mei-img-preview img{width:100%;height:100%;object-fit:cover;}
+.mei-img-preview input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.mei-del{background:rgba(192,57,43,.15);border:1px solid var(--acc);color:var(--acc);width:32px;height:32px;font-size:14px;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;align-self:flex-end;font-family:'Outfit',sans-serif;}
+.mei-del:hover{background:var(--acc);color:#fff;}
+
+/* Campaign editor */
+.camp-editor-item{background:var(--bg3);padding:14px;margin-bottom:10px;border:1px solid var(--bdr);border-left:3px solid var(--acc2);display:grid;grid-template-columns:60px 1fr 1fr 80px 32px;gap:10px;align-items:end;}
+.camp-thumb-edit{width:60px;height:52px;background:var(--bg2);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:22px;position:relative;overflow:hidden;cursor:pointer;}
+.camp-thumb-edit img{width:100%;height:100%;object-fit:cover;}
+.camp-thumb-edit input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+
+/* Orders table */
+.orders-table{width:100%;border-collapse:collapse;font-size:12px;}
+.orders-table th{padding:10px 12px;text-align:left;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);font-weight:400;border-bottom:1px solid var(--bdr);}
+.orders-table td{padding:12px 12px;border-bottom:1px solid var(--bdr);color:var(--text2);vertical-align:top;}
+.orders-table tr:hover td{background:var(--bg3);}
+.order-status{display:inline-flex;padding:3px 10px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;}
+.os-new{background:rgba(212,168,71,.15);color:var(--acc2);}
+.os-done{background:rgba(46,204,113,.12);color:#2ecc71;}
+.os-cancel{background:rgba(192,57,43,.12);color:var(--acc);}
+.order-mark-btn{padding:5px 12px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--bdr);background:transparent;color:var(--text2);cursor:pointer;font-family:'Outfit',sans-serif;transition:all .3s;margin-left:4px;}
+.order-mark-btn:hover{border-color:var(--acc2);color:var(--acc2);}
+
+/* Customers table */
+
+.block-btn{padding:5px 12px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:500;transition:all .3s;}
+.block-btn.block{background:rgba(192,57,43,.15);color:var(--acc);border:1px solid rgba(192,57,43,.3);}
+.block-btn.block:hover{background:var(--acc);color:#fff;}
+.block-btn.unblock{background:rgba(46,204,113,.12);color:#2ecc71;border:1px solid rgba(46,204,113,.25);}
+.block-btn.unblock:hover{background:#2ecc71;color:#000;}
+.blocked-tag{font-size:9px;background:rgba(192,57,43,.2);color:var(--acc);padding:2px 8px;letter-spacing:.08em;text-transform:uppercase;}
+
+/* Theme switcher */
+.theme-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.theme-btn{padding:0;border:2px solid var(--bdr);cursor:pointer;transition:all .3s;overflow:hidden;aspect-ratio:1;}
+.theme-btn.active{border-color:var(--acc2);}
+.theme-btn:hover{border-color:var(--acc);}
+.theme-swatch{width:100%;height:60px;display:flex;flex-direction:column;}
+.ts-top{flex:1;}
+.ts-bot{height:16px;display:flex;}
+.ts-c{flex:1;}
+.theme-name{font-size:9px;letter-spacing:.12em;text-transform:uppercase;text-align:center;padding:6px 4px;color:var(--text2);background:var(--bg3);}
+
+/* Cart */
+#cart-btn{position:fixed;bottom:24px;left:24px;z-index:600;background:var(--acc2);color:var(--bg);padding:12px 20px;font-size:10px;letter-spacing:.13em;text-transform:uppercase;font-family:'Outfit',sans-serif;font-weight:600;cursor:pointer;border:none;box-shadow:0 4px 20px rgba(0,0,0,.6);transition:all .3s;display:none;align-items:center;gap:8px;}
+#cart-btn:hover{opacity:.85;}
+#cart-count{background:var(--acc);color:#fff;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;}
+#cart-modal-body{max-height:340px;overflow-y:auto;}
+.cart-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bdr);}
+.cart-item-name{font-size:13px;font-weight:400;}
+.cart-item-qty{display:flex;align-items:center;gap:10px;font-size:12px;}
+.qty-btn{width:26px;height:26px;background:var(--bg3);border:1px solid var(--bdr);color:var(--text);cursor:pointer;font-size:14px;transition:background .2s;font-family:'Outfit',sans-serif;}
+.qty-btn:hover{background:var(--acc);color:#fff;}
+.cart-item-price{font-family:'Playfair Display',serif;font-size:16px;color:var(--acc2);}
+
+/* FAVORİLER */
+.fav-btn{background:none;border:none;cursor:pointer;font-size:16px;padding:2px 4px;line-height:1;transition:transform .2s;color:var(--text3);}
+.fav-btn:hover{transform:scale(1.25);}
+.fav-btn.active{color:#e91e63;}
+.fav-section{padding:48px 72px;border-top:1px solid var(--bdr);}
+.fav-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;margin-bottom:24px;}
+.fav-title span{color:var(--acc);}
+.fav-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--bdr);}
+.fav-empty{padding:40px;text-align:center;color:var(--text3);font-size:13px;font-weight:200;}
+@media(max-width:768px){.fav-section{padding:36px 20px;} .fav-grid{grid-template-columns:1fr;}}
+.order-hist-item{padding:14px 0;border-bottom:1px solid var(--bdr);}
+.order-hist-item:last-child{border-bottom:none;}
+.order-hist-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.order-hist-date{font-size:10px;color:var(--text3);letter-spacing:.06em;}
+.order-hist-branch{font-size:10px;color:var(--acc2);letter-spacing:.06em;}
+.order-hist-items{font-size:12px;color:var(--text2);font-weight:200;line-height:1.6;margin-bottom:6px;}
+.order-hist-total{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--acc2);}
+.order-hist-status{font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;}
+.order-hist-status.new{background:rgba(192,57,43,.15);color:var(--acc);}
+.order-hist-status.done{background:rgba(46,204,113,.1);color:#2ecc71;}
+.order-hist-empty{padding:40px 0;text-align:center;color:var(--text3);font-size:13px;}
+.cart-total{display:flex;justify-content:space-between;align-items:center;padding:16px 0 0;margin-top:4px;}
+.cart-total-lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);}
+.cart-total-val{font-family:'Playfair Display',serif;font-size:24px;color:var(--acc2);font-weight:700;}
+.cart-addr{width:100%;background:var(--bg3);border:1px solid var(--bdr);color:var(--text);padding:10px 13px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;margin-top:14px;}
+.cart-addr:focus{border-color:var(--acc);}
+
+/* Notification */
+#notif{position:fixed;top:80px;right:24px;z-index:1000;padding:14px 20px;font-size:12px;letter-spacing:.06em;font-weight:400;opacity:0;transform:translateY(-10px);transition:all .3s;pointer-events:none;max-width:300px;}
+#notif.show{opacity:1;transform:translateY(0);}
+#notif.ok{background:rgba(39,174,96,.9);color:#fff;}
+#notif.err{background:rgba(192,57,43,.9);color:#fff;}
+#notif.info{background:rgba(212,168,71,.9);color:#000;}
+
+/* ===== FOUNDER ===== */
+.founder-sec{background:var(--bg2);padding:100px 72px;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);}
+.founder-inner{display:grid;grid-template-columns:340px 1fr;gap:80px;align-items:center;max-width:1100px;margin:0 auto;}
+.founder-photo-wrap{position:relative;}
+.founder-photo{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:var(--bg3);font-size:80px;display:flex;align-items:center;justify-content:center;}
+.founder-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.founder-photo-frame{position:absolute;top:16px;left:16px;right:-16px;bottom:-16px;border:1px solid var(--acc2);z-index:-1;pointer-events:none;}
+.founder-badge{position:absolute;bottom:-20px;right:-20px;background:var(--acc);padding:16px 20px;text-align:center;}
+.founder-badge-title{font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:4px;}
+.founder-badge-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:900;color:#fff;}
+.founder-right{}
+.founder-label{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--acc);margin-bottom:16px;font-weight:400;}
+.founder-name{font-family:'Playfair Display',serif;font-size:clamp(32px,3.5vw,52px);font-weight:900;line-height:1.05;margin-bottom:6px;}
+.founder-title{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc2);font-weight:400;margin-bottom:28px;}
+.founder-bio{font-size:14px;line-height:2;color:var(--text2);font-weight:200;margin-bottom:36px;white-space:pre-line;}
+.founder-milestones{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--bdr);}
+.milestone{display:flex;gap:20px;padding:12px 0 12px 20px;position:relative;}
+.milestone::before{content:'';position:absolute;left:-5px;top:18px;width:8px;height:8px;border-radius:50%;background:var(--acc2);}
+.milestone-year{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--acc2);white-space:nowrap;min-width:48px;}
+.milestone-text{font-size:13px;color:var(--text2);font-weight:200;line-height:1.6;}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .8s,transform .8s;}
+.reveal.on{opacity:1;transform:translateY(0);}
+
+/* ===== INSTAGRAM SECTION ===== */
+.insta-section{background:#000;padding:48px 72px;border-top:1px solid rgba(247,243,236,.06);}
+.insta-section-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;margin-bottom:28px;}
+.insta-section-title span{color:var(--acc);}
+.insta-accounts{display:flex;flex-direction:column;gap:10px;}
+.insta-account{display:flex;align-items:stretch;background:var(--bg2);border:1px solid var(--bdr);overflow:hidden;}
+.insta-account-left{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:14px 16px;border-right:1px solid var(--bdr);width:90px;flex-shrink:0;}
+.insta-logo{width:36px;height:36px;flex-shrink:0;}
+.insta-handle{font-size:9px;font-weight:600;color:var(--text);letter-spacing:.04em;text-align:center;}
+.insta-follow{background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);color:#fff;padding:5px 8px;font-size:7px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;font-family:'Outfit',sans-serif;text-decoration:none;display:block;text-align:center;transition:opacity .3s;width:100%;}
+.insta-follow:hover{opacity:.85;}
+.insta-photo-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;flex:1;min-height:0;}
+.insta-photo-item{position:relative;aspect-ratio:1;overflow:hidden;background:var(--bg3);}
+.insta-photo-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;}
+.insta-photo-item:hover img{transform:scale(1.06);}
+.insta-photo-item .ig-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.75);color:#fff;border:none;width:16px;height:16px;border-radius:50%;font-size:9px;cursor:pointer;display:none;align-items:center;justify-content:center;}
+.insta-photo-item:hover .ig-del{display:flex;}
+.insta-photo-empty{display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;flex:1;padding:12px;}
+@media(max-width:900px){
+  .insta-section{padding:36px 20px;}
+  .insta-accounts{grid-template-columns:1fr;}
+}
+
+@media(max-width:900px){
+  .menu-sec{padding:48px 24px!important;}
+}
+/* Scrollbar */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--acc);}
+
+@media(max-width:900px){
+  nav{padding:14px 20px;}
+  .nav-mid{display:none;}
+  .hero-content{padding:0 24px 72px;}
+  .hero-emojis,.hero-kanji{display:none;}
+  .about{grid-template-columns:1fr;}
+  .about-l,.menu-sec,.res-sec{padding:72px 24px;}
+  .about-r{padding:40px 24px;}
+  .menu-grid{grid-template-columns:1fr;}
+  footer{grid-template-columns:1fr;padding:52px 24px;}
+  .foot-bot{padding:16px 24px;flex-direction:column;gap:10px;}
+  #admin-panel{width:100vw;}
+  .ap-row{grid-template-columns:1fr;}
+  .mei-hd{grid-template-columns:70px 1fr 80px 32px;}
+
+  /* Founder section mobile fix */
+  .founder-sec{padding:60px 20px;}
+  .founder-inner{grid-template-columns:1fr;gap:40px;max-width:100%;}
+  .founder-photo-wrap{max-width:280px;margin:0 auto;}
+  .founder-photo-frame{right:-10px;bottom:-10px;}
+  .founder-badge{right:-10px;bottom:-10px;padding:10px 14px;}
+  .founder-badge-name{font-size:13px;}
+  .founder-name{font-size:clamp(26px,7vw,40px);}
+  .founder-bio{font-size:13px;line-height:1.85;}
+
+  /* Rezervasyon form mobile fix */
+  .res-sec{padding:60px 20px;}
+  .res-sec > div[style]{max-width:100% !important;grid-template-columns:1fr !important;}
+  .res-title{font-size:clamp(32px,8vw,56px);}
+
+  /* Branch bar mobile */
+  #branch-bar{padding:0 16px;}
+
+  /* Corner buttons mobile */
+  #corner-btn{bottom:16px;right:12px;}
+  .cbtn{padding:10px 14px;font-size:9px;}
+
+  /* Full menu modal mobile */
+  #full-menu-overlay > div:first-child{padding:12px 16px;}
+  #fm-grid-wrapper{padding:12px 8px 60px;}
+  #fm-menu-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .menu-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .mcard-img{height:72px!important;font-size:28px!important;}
+  .mcard-body{padding:8px 10px 10px!important;}
+  .mcard-name{font-size:12px!important;}
+  .mcard-desc{-webkit-line-clamp:1!important;}
+  .add-to-cart{padding:4px 8px!important;font-size:8px!important;}
+  #fm-branch-tabs button{padding:8px 12px;font-size:9px;}
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body data-theme="dark">
+
+<!-- ===== TEMA DESENİ ===== -->
+<div id="theme-pattern"></div>
+<canvas id="sakura-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:0;transition:opacity 1s;"></canvas>
+
+<!-- KÖŞE SÜSLEMELERİ -->
+<div id="corner-tl" class="corner-deco corner-tl"></div>
+<div id="corner-tr" class="corner-deco corner-tr"></div>
+<div id="corner-bl" class="corner-deco corner-bl"></div>
+<div id="corner-br" class="corner-deco corner-br"></div>
+<div id="notif"></div>
+
+<!-- ===== NAV ===== -->
+<nav>
+  <a class="logo" href="javascript:void(0)">
+    <span class="logo-m">Fujimi <span>&</span></span>
+    <span class="logo-s">Sushi &amp; Wok</span>
+  </a>
+  <ul class="nav-mid">
+    <li><a href="javascript:void(0)" onclick="openFullMenu()">Menü</a></li>
+    <li><a href="#about">Hakkımızda</a></li>
+    <li><a href="#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-r" id="nav-guest">
+    <button class="nb nb-ghost" onclick="openAuth('login')">Giriş Yap</button>
+    <button class="nb nb-red" onclick="openAuth('register')">Üye Ol</button>
+  </div>
+  <div class="nav-r" id="nav-loggedin">
+    <button class="nb nb-ghost" style="font-size:11px;padding:6px 14px;" onclick="openOrderHistory()" id="nav-uname"></button>
+    <span id="nav-branch-badge" class="nb nb-ghost" style="font-size:9px;padding:6px 12px;"></span>
+    <button class="nb nb-ghost" onclick="logout()">Çıkış</button>
+  </div>
+</nav>
+
+<!-- ===== BRANCH BAR ===== -->
+<div id="branch-bar">
+  <span class="bb-label">📍 Şube:</span>
+  <div class="bb-branches" id="bb-branches"></div>
+  <span class="bb-warn" id="bb-warn">⚠ Sipariş için şube seçin</span>
+</div>
+
+<!-- ===== CAMPAIGN STRIP ===== -->
+<div id="camp-strip">
+  <div class="camp-track" id="camp-track"></div>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero" style="margin-top:108px;">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <!-- Üst köşe dekorasyonları -->
+  <div style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:1;overflow:hidden;">
+    <!-- Işık huzmesi -->
+    <div style="position:absolute;top:-60px;left:-60px;width:500px;height:500px;background:radial-gradient(circle,rgba(192,57,43,.14) 0%,transparent 65%);"></div>
+    <div style="position:absolute;top:-40px;right:-40px;width:400px;height:400px;background:radial-gradient(circle,rgba(194,24,91,.10) 0%,transparent 65%);"></div>
+    <div style="position:absolute;top:20%;left:50%;width:300px;height:300px;transform:translateX(-50%);background:radial-gradient(circle,rgba(212,168,71,.06) 0%,transparent 65%);"></div>
+    <!-- Orta çizgiler -->
+    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:1px;height:160px;background:linear-gradient(to bottom,var(--acc),transparent);opacity:.5;"></div>
+    <div style="position:absolute;top:0;left:calc(50% - 90px);width:1px;height:90px;background:linear-gradient(to bottom,var(--acc2),transparent);opacity:.3;"></div>
+    <div style="position:absolute;top:0;left:calc(50% + 90px);width:1px;height:90px;background:linear-gradient(to bottom,var(--acc2),transparent);opacity:.3;"></div>
+    <!-- Köşe braketler -->
+    <div style="position:absolute;top:24px;left:24px;width:48px;height:48px;border-top:1px solid var(--acc);border-left:1px solid var(--acc);opacity:.5;"></div>
+    <div style="position:absolute;top:24px;right:24px;width:48px;height:48px;border-top:1px solid var(--acc2);border-right:1px solid var(--acc2);opacity:.35;"></div>
+    <!-- Yatay çizgiler -->
+    <div style="position:absolute;top:60px;left:80px;width:120px;height:1px;background:linear-gradient(to right,transparent,var(--acc),transparent);opacity:.3;"></div>
+    <div style="position:absolute;top:60px;right:80px;width:120px;height:1px;background:linear-gradient(to right,transparent,var(--acc2),transparent);opacity:.2;"></div>
+    <!-- Fujimi yazı -->
+    <div style="position:absolute;top:22px;left:50%;transform:translateX(-50%);font-family:'Playfair Display',serif;font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:var(--acc2);opacity:.5;white-space:nowrap;">富士見 · FUJIMI · 2026</div>
+    <!-- Çiçekler SVG — üst alana dağılmış -->
+    <svg style="position:absolute;top:0;left:0;width:100%;height:55%;opacity:.9;" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Dal soldan -->
+      <path d="M-10,280 Q60,200 100,140 Q130,90 160,50 Q175,28 185,10" stroke="#ad1457" stroke-width="2" fill="none" opacity="0.55"/>
+      <path d="M100,140 Q75,125 50,135" stroke="#c2185b" stroke-width="1.5" fill="none" opacity="0.5"/>
+      <path d="M130,95 Q108,82 90,90" stroke="#ad1457" stroke-width="1.3" fill="none" opacity="0.45"/>
+      <path d="M160,52 Q140,38 125,44" stroke="#c2185b" stroke-width="1.2" fill="none" opacity="0.4"/>
+      <g transform="translate(50,135) rotate(15) scale(1.1)" opacity="0.85">
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#ec407a" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#ec407a" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(288)"/>
+      <circle cx="0" cy="0" r="3" fill="#fff9c4"/>
+    </g>
+      <g transform="translate(90,90) rotate(-20) scale(0.95)" opacity="0.8">
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#ec407a" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#ec407a" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(288)"/>
+      <circle cx="0" cy="0" r="3" fill="#fff9c4"/>
+    </g>
+      <g transform="translate(125,44) rotate(30) scale(0.85)" opacity="0.75">
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#ec407a" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#ec407a" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(288)"/>
+      <circle cx="0" cy="0" r="3" fill="#fff9c4"/>
+    </g>
+      <g transform="translate(185,10) rotate(-10) scale(0.7)" opacity="0.65">
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#ec407a" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#ec407a" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(288)"/>
+      <circle cx="0" cy="0" r="3" fill="#fff9c4"/>
+    </g>
+      <ellipse cx="72" cy="148" rx="14.0" ry="5.0" fill="#388e3c" opacity="0.4" transform="rotate(-40,72,148)"/>
+      <ellipse cx="110" cy="105" rx="12.6" ry="4.5" fill="#388e3c" opacity="0.35" transform="rotate(-55,110,105)"/>
+      <ellipse cx="148" cy="62" rx="11.200000000000001" ry="4.0" fill="#388e3c" opacity="0.3" transform="rotate(-45,148,62)"/>
+      <!-- Dal sağdan -->
+      <path d="M810,270 Q740,195 700,138 Q670,88 640,48 Q622,25 610,8" stroke="#ad1457" stroke-width="2" fill="none" opacity="0.5"/>
+      <path d="M700,138 Q725,122 750,132" stroke="#c2185b" stroke-width="1.5" fill="none" opacity="0.45"/>
+      <path d="M668,92 Q692,78 710,86" stroke="#ad1457" stroke-width="1.3" fill="none" opacity="0.4"/>
+      <g transform="translate(750,132) rotate(-15) scale(1.05)" opacity="0.8">
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#ec407a" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#ec407a" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(288)"/>
+      <circle cx="0" cy="0" r="3" fill="#fff9c4"/>
+    </g>
+      <g transform="translate(710,86) rotate(20) scale(0.9)" opacity="0.75">
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#ec407a" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#ec407a" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(288)"/>
+      <circle cx="0" cy="0" r="3" fill="#fff9c4"/>
+    </g>
+      <g transform="translate(610,8) rotate(-25) scale(0.75)" opacity="0.65">
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#ec407a" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#ec407a" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f48fb1" transform="rotate(288)"/>
+      <circle cx="0" cy="0" r="3" fill="#fff9c4"/>
+    </g>
+      <ellipse cx="728" cy="144" rx="13.299999999999999" ry="4.75" fill="#388e3c" opacity="0.38" transform="rotate(40,728,144)"/>
+      <ellipse cx="690" cy="100" rx="11.9" ry="4.25" fill="#388e3c" opacity="0.33" transform="rotate(52,690,100)"/>
+      <!-- Orta üst tek çiçek -->
+      <g transform="translate(400,18) rotate(0) scale(0.8)" opacity="0.6">
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f06292" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#e91e63" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f06292" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#e91e63" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-10" rx="5.5" ry="10" fill="#f06292" transform="rotate(288)"/>
+      <circle cx="0" cy="0" r="3" fill="#fff9c4"/>
+    </g>
+      <!-- Dağınık yapraklar -->
+      <ellipse cx="220" cy="80" rx="4.2" ry="8.4" fill="#f48fb1" opacity="0.35" transform="rotate(25,220,80)"/>
+      <ellipse cx="320" cy="35" rx="3.5" ry="7.0" fill="#f48fb1" opacity="0.3" transform="rotate(-15,320,35)"/>
+      <ellipse cx="480" cy="45" rx="3.8500000000000005" ry="7.700000000000001" fill="#f48fb1" opacity="0.32" transform="rotate(40,480,45)"/>
+      <ellipse cx="580" cy="90" rx="3.5" ry="7.0" fill="#f48fb1" opacity="0.28" transform="rotate(-30,580,90)"/>
+      <circle cx="18" cy="220" r="4" fill="#f48fb1" opacity="0.6"/>
+      <circle cx="780" cy="200" r="3.5" fill="#f06292" opacity="0.55"/>
+      <circle cx="270" cy="15" r="2.5" fill="#f48fb1" opacity="0.5"/>
+      <circle cx="530" cy="20" r="2.5" fill="#ec407a" opacity="0.45"/>
+    </svg>
+  </div>
+  <div class="hero-kanji">富士見</div>
+  <div class="hero-content">
+    <p class="hero-eyebrow" id="d-tag">Tokyo'dan İstanbul'a</p>
+    <h1 class="hero-h1">Fujimi<br><i>Sushi</i></h1>
+    <p class="hero-h1b">&amp; Wok</p>
+    <p class="hero-desc" id="d-desc">Japon mutfağının inceliği ile Asya'nın cesur aromaları bir arada. Her tabak, her lokma — saf bir sanat eseri.</p>
+    <div class="hero-acts">
+      <a href="javascript:void(0)" onclick="openFullMenu()" class="btn-main">Menüyü Keşfet</a>
+      <a href="#reservation" class="btn-ghost">Rezervasyon</a>
+    </div>
+  </div>
+  <div class="hero-emojis">
+    <span class="hei">🍣</span>
+    <span class="hei">🥢</span>
+    <span class="hei">🍜</span>
+  </div>
+</section>
+
+<!-- ===== TICKER ===== -->
+<div class="ticker"><div class="ticker-track">
+  <span class="ti">Sushi <span class="td">✦</span></span><span class="ti">Wok <span class="td">✦</span></span><span class="ti">Fujimi <span class="td">✦</span></span><span class="ti">Sashimi <span class="td">✦</span></span><span class="ti">Ramen <span class="td">✦</span></span><span class="ti">Tempura <span class="td">✦</span></span><span class="ti">Maki <span class="td">✦</span></span><span class="ti">Nigiri <span class="td">✦</span></span>
+  <span class="ti">Sushi <span class="td">✦</span></span><span class="ti">Wok <span class="td">✦</span></span><span class="ti">Fujimi <span class="td">✦</span></span><span class="ti">Sashimi <span class="td">✦</span></span><span class="ti">Ramen <span class="td">✦</span></span><span class="ti">Tempura <span class="td">✦</span></span><span class="ti">Maki <span class="td">✦</span></span><span class="ti">Nigiri <span class="td">✦</span></span>
+</div></div>
+
+<!-- ===== ABOUT ===== -->
+<section class="about" id="about">
+  <div class="about-l">
+    <p class="sec-label reveal">Felsefemiz</p>
+    <h2 class="about-title reveal">Gelenekten gelen,<br><em>cesur</em> tatlar</h2>
+    <p class="about-text reveal" id="d-about">Fujimi — Japonca'da "fuji dağını görmek" anlamına gelir. Her tabakta o zirveli deneyimi sunmayı hedefliyoruz.</p>
+    <div class="stats reveal">
+      <div><div class="snum" id="d-s1">12+</div><div class="slbl">Yıllık Deneyim</div></div>
+      <div><div class="snum" id="d-s2">60+</div><div class="slbl">Menü Çeşidi</div></div>
+      <div><div class="snum" id="d-s3">★4.9</div><div class="slbl">Müşteri Puanı</div></div>
+    </div>
+  </div>
+  <div class="about-r">
+    <span class="big-em">🍱</span>
+    <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+  </div>
+</section>
+
+<!-- ===== MENU ===== -->
+<section class="menu-sec" id="menu" style="padding:60px 72px;text-align:center;">
+  <p class="sec-label" style="margin-bottom:12px;">Lezzetlerimiz</p>
+  <h2 class="menu-title" style="margin-bottom:28px;">Öne Çıkan<br><em>Ürünler</em></h2>
+  <a href="javascript:void(0)" onclick="openFullMenu()" class="btn-main">Tüm Menüyü Gör →</a>
+  <div class="menu-grid" id="menu-grid" style="display:none;"></div>
+</section>
+
+<!-- ===== RESERVATION ===== -->
+<section class="res-sec" id="reservation">
+  <p class="res-lbl">Bize Katılın</p>
+  <h2 class="res-title">Masanızı<br><em>Ayırtın</em></h2>
+  <p class="res-txt">Bilgilerinizi bırakın, en kısa sürede sizi arayalım.</p>
+  <div style="max-width:560px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;">
+    <input id="res-fname" autocomplete="given-name" style="background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.3);color:#fff;padding:14px 18px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;width:100%;" placeholder="Adınız" type="text">
+    <input id="res-lname" autocomplete="family-name" style="background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.3);color:#fff;padding:14px 18px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;width:100%;" placeholder="Soyadınız" type="text">
+    <input id="res-phone" autocomplete="tel" style="background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.3);color:#fff;padding:14px 18px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;width:100%;grid-column:span 2;" placeholder="Telefon: 0 (5xx) xxx xx xx" type="tel">
+    <input id="res-date" style="background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.3);color:#fff;padding:14px 18px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;width:100%;color-scheme:dark;" type="date">
+    <input id="res-time" style="background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.3);color:#fff;padding:14px 18px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;width:100%;color-scheme:dark;" type="time">
+    <select id="res-guests" style="background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.3);color:#fff;padding:14px 18px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;width:100%;"><option value="">Kişi Sayısı</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7-10</option><option>10+</option></select>
+    <select id="res-branch" style="background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.3);color:#fff;padding:14px 18px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;width:100%;"><option value="">Şube Seçin</option><option>Lara Şubesi</option><option>Konyaaltı Şubesi</option></select>
+    <textarea id="res-note" style="background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.3);color:#fff;padding:14px 18px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;width:100%;grid-column:span 2;resize:none;height:80px;" placeholder="Özel istek... (isteğe bağlı)"></textarea>
+    <button onclick="submitReservation()" style="grid-column:span 2;background:#000;color:#fff;border:none;padding:16px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-family:'Outfit',sans-serif;font-weight:500;cursor:pointer;width:100%;">Rezervasyon Talebi Gönder</button>
+  </div>
+  <p id="res-msg" style="margin-top:16px;font-size:13px;color:rgba(255,255,255,.8);min-height:20px;"></p>
+</section>
+
+<!-- ===== FOUNDER ===== -->
+<section class="founder-sec" id="founder">
+  <div class="founder-inner">
+    <div class="founder-photo-wrap reveal">
+      <div class="founder-photo" id="founder-photo-el">
+        <span id="founder-photo-placeholder" style="font-size:80px;">👤</span>
+      </div>
+      <div class="founder-photo-frame"></div>
+      <div class="founder-badge">
+        <div class="founder-badge-title">Kurucu</div>
+        <div class="founder-badge-name" id="d-founder-badge">İsim Soyisim</div>
+      </div>
+    </div>
+    <div class="founder-right reveal">
+      <p class="founder-label">Kurucumuzdan</p>
+      <h2 class="founder-name" id="d-founder-name">İsim Soyisim</h2>
+      <p class="founder-title" id="d-founder-title">Fujimi Sushi &amp; Wok — Kurucu &amp; CEO</p>
+      <p class="founder-bio" id="d-founder-bio">Hikayenizi buraya yazın...</p>
+      <div class="founder-milestones" id="d-milestones"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TAM MENÜ MODAL ===== -->
+<div id="full-menu-overlay" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:900;overflow-y:auto;">
+  <div style="position:sticky;top:0;z-index:10;background:rgba(0,0,0,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--bdr);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+    <div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:900;">Fujimi <span style="color:var(--acc);">&</span> <span style="font-style:italic;color:var(--acc2);">Menü</span></div>
+      <div style="font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--text3);margin-top:2px;" id="fm-branch-label">Şube seçin</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div id="fm-branch-tabs" style="display:flex;gap:0;border:1px solid var(--bdr);"></div>
+      <button onclick="closeFullMenu()" style="background:transparent;border:1px solid var(--bdr);color:var(--text2);width:38px;height:38px;font-size:18px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .3s;" onmouseover="this.style.background='var(--acc)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--text2)'">✕</button>
+    </div>
+  </div>
+  <div style="padding:20px 20px 60px;" id="fm-grid-wrapper">
+    <div id="fm-menu-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--bdr);width:100%;"></div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer id="contact">
+  <div>
+    <div class="fl-main">Fujimi <span>&</span></div>
+    <div class="fl-sub">Sushi &amp; Wok</div>
+    <p class="fl-desc">Tokyo'nun ruhu, İstanbul'un kalbi.</p>
+  </div>
+  <div>
+    <p class="fc-title">Menü</p>
+    <ul class="fc-links"><li><a href="javascript:void(0)">Sushi</a></li><li><a href="javascript:void(0)">Wok</a></li><li><a href="javascript:void(0)">Ramen</a></li></ul>
+  </div>
+  <div>
+    <p class="fc-title">Saatler</p>
+    <ul class="fc-links">
+      <li><a href="javascript:void(0)" id="d-hours">Pzt–Cum: 12:00–23:00</a></li>
+      <li><a href="javascript:void(0)" id="d-weekend">Hft Sonu: 11:00–00:00</a></li>
+    </ul>
+  </div>
+  <div>
+    <p class="fc-title">İletişim</p>
+    <ul class="fc-links">
+      <li><a href="javascript:void(0)" id="d-address">📍 Antalya</a></li>
+      <li><a href="tel:05057423207" id="d-phone">📞 0505 742 32 07</a></li>
+      <li><a href="/cdn-cgi/l/email-protection#23454a5142575a42504a4d4c595756514863444e424a4f0d404c4e" id="d-email">✉️ <span class="__cf_email__" data-cfemail="55333c2734212c34263c3b3a2f2120273e153238343c397b363a38">[email&#160;protected]</span></a></li>
+    </ul>
+  </div>
+</footer>
+<div class="foot-bot">
+  <p class="foot-copy">© 2025 Fujimi Sushi &amp; Wok</p>
+  <div class="foot-soc"><span style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(247,243,236,.25);">Instagram @cheffiratyasin</span><span style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(247,243,236,.25);">Instagram @fujimisushi</span><span style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(247,243,236,.25);">TikTok</span></div>
+</div>
+
+<!-- ===== CART BUTTON ===== -->
+<button id="cart-btn" onclick="openCart()">
+  🛒 Sepet <span id="cart-count">0</span>
+</button>
+
+<!-- ===== CORNER BUTTONS ===== -->
+<div id="corner-btn">
+  <button class="cbtn cbtn-gold" onclick="openAdminPanel()">⚙ Yönetim</button>
+  <button class="cbtn cbtn-dark" onclick="openAuth('login')">🔑 Giriş / Üye Ol</button>
+</div>
+
+<!-- ===== AUTH MODAL ===== -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <div class="modal-hd">
+      <div><h2 id="auth-modal-title">Hesabınıza Girin</h2><p>Fujimi Sushi &amp; Wok</p></div>
+      <button class="modal-close" onclick="closeModal('auth-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tabs">
+        <button class="mtab active" id="tab-login" onclick="switchAuthTab('login')">Giriş Yap</button>
+        <button class="mtab" id="tab-register" onclick="switchAuthTab('register')">Üye Ol</button>
+      </div>
+      <!-- LOGIN -->
+      <div id="form-login">
+        <div class="mfield"><label>E-posta</label><input id="l-email" type="email" placeholder="ornek@email.com"></div>
+        <div class="mfield"><label>Şifre</label><input id="l-pass" type="password" placeholder="••••••••"></div>
+        <div class="merr" id="l-err"></div>
+        <button class="mbtn mbtn-red" onclick="doLogin()">Giriş Yap</button>
+      </div>
+      <!-- REGISTER -->
+      <div id="form-register" style="display:none;">
+        <div class="mfield"><label>Ad Soyad</label><input id="r-name" placeholder="Adınız Soyadınız"></div>
+        <div class="mfield"><label>E-posta</label><input id="r-email" type="email" placeholder="ornek@email.com"></div>
+        <div class="mfield"><label>Telefon</label><input id="r-phone" placeholder="05xx xxx xx xx"></div>
+        <div class="mfield"><label>Şifre (en az 6 karakter)</label><input id="r-pass" type="password" placeholder="••••••••"></div>
+        <div class="mfield"><label>Şifre Tekrar</label><input id="r-pass2" type="password" placeholder="••••••••"></div>
+        <div class="merr" id="r-err"></div>
+        <div class="mok" id="r-ok"></div>
+        <button class="mbtn mbtn-red" onclick="doRegister()">Üye Ol</button>
+      </div>
+      <hr class="mdivider">
+      <p class="minfo">Admin girişi için sağ alttaki ⚙ Yönetim butonunu kullanın.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN LOGIN MODAL ===== -->
+<div class="modal-overlay" id="admin-login-modal">
+  <div class="modal">
+    <div class="modal-hd" style="background:#111;">
+      <div><h2>⚙ Admin Girişi</h2><p>Fujimi Sushi &amp; Wok — Yönetim</p></div>
+      <button class="modal-close" onclick="closeModal('admin-login-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="mfield"><label>Admin Şifresi</label><input id="ap-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
+      <div class="merr" id="ap-err"></div>
+      <button class="mbtn mbtn-gold" onclick="doAdminLogin()">Giriş Yap</button>
+      <hr class="mdivider">
+      <p class="minfo" style="font-size:11px;">Şifreyi yönetime göre değiştirin. Varsayılan şifre ilk kurulumda ayarlanmıştır.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CART MODAL ===== -->
+<div class="modal-overlay" id="cart-modal">
+  <div class="modal" style="width:520px;">
+    <div class="modal-hd">
+      <div><h2>🛒 Sepetim</h2><p id="cart-branch-label">Şube seçilmedi</p></div>
+      <button class="modal-close" onclick="closeModal('cart-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="cart-modal-body"></div>
+      <div class="cart-total">
+        <span class="cart-total-lbl">Toplam</span>
+        <span class="cart-total-val" id="cart-total-val">₺0</span>
+      </div>
+      <input class="cart-addr" id="cart-address" placeholder="Teslimat adresi giriniz...">
+      <button class="mbtn mbtn-red" style="margin-top:14px;" onclick="placeOrder()">Sipariş Ver</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SİPARİŞ GEÇMİŞİ MODAL ===== -->
+<div class="modal-overlay" id="order-hist-modal">
+  <div class="modal" style="width:540px;">
+    <div class="modal-hd">
+      <div>
+        <h2>📋 Sipariş Geçmişim</h2>
+        <p id="order-hist-subtitle">Son siparişleriniz</p>
+      </div>
+      <button class="modal-close" onclick="closeModal('order-hist-modal')">✕</button>
+    </div>
+    <div class="modal-body" style="max-height:500px;overflow-y:auto;">
+      <div id="order-hist-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD BRANCH MODAL ===== -->
+<div class="modal-overlay" id="branch-modal">
+  <div class="modal">
+    <div class="modal-hd"><div><h2>➕ Yeni Şube</h2><p>Şube ekle</p></div>
+    <button class="modal-close" onclick="closeModal('branch-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="mfield"><label>Şube Adı</label><input id="br-name" placeholder="Örn: Konyaaltı Şubesi"></div>
+      <div class="mfield"><label>Adres</label><input id="br-addr" placeholder="Tam adres"></div>
+      <button class="mbtn mbtn-gold" onclick="addBranch()">Şubeyi Ekle</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div id="admin-panel-overlay">
+  <div id="admin-panel">
+    <div class="ap-hd">
+      <div class="ap-hd-l">
+        <h2>⚙ Yönetim Paneli</h2>
+        <p id="ap-branch-title">Şube: —</p>
+      </div>
+      <button class="ap-close" onclick="closeAdminPanel()">✕</button>
+    </div>
+
+    <!-- Branch Switcher -->
+    <div class="ap-branches">
+      <span class="ap-br-label">Şube:</span>
+      <div id="ap-branch-btns" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+      <button class="br-add-btn" onclick="openModal('branch-modal')">+ Şube Ekle</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="ap-tabs">
+      <button class="aptab active" onclick="apTab(0)">📋 Genel</button>
+      <button class="aptab" onclick="apTab(1)">🍱 Menü</button>
+      <button class="aptab" onclick="apTab(2)">📢 Kampanya</button>
+      <button class="aptab" onclick="apTab(3)">📦 Siparişler</button>
+      <button class="aptab" onclick="apTab(4)">👥 Üyeler</button>
+          <button class="aptab" onclick="apTab(8)">📅 Rezervasyon</button>
+      <button class="aptab" onclick="apTab(5)">🎨 Tema</button>
+      <button class="aptab" onclick="apTab(6)">🔐 Şifre</button>
+      <button class="aptab" onclick="apTab(7)">👤 Kurucu</button>
+      <button class="aptab" onclick="apTab(9)">📸 Instagram</button>
+      <button class="aptab" onclick="apTab(10)">🪧 Masa QR</button>
+    </div>
+
+    <div class="ap-body">
+
+      <!-- TAB 0: General -->
+      <div class="ap-section active" id="aps-0">
+        <p class="ap-sec-title">📋 Şube Bilgileri</p>
+        <div class="ap-row"><div class="ap-f"><label>Şube Adı</label><input id="g-brname"></div><div class="ap-f"><label>Adres</label><input id="g-address"></div></div>
+        <div class="ap-row"><div class="ap-f"><label>Telefon</label><input id="g-phone"></div><div class="ap-f"><label>E-posta</label><input id="g-email"></div></div>
+        <div class="ap-row"><div class="ap-f"><label>Hafta İçi Saatler</label><input id="g-hours"></div><div class="ap-f"><label>Hafta Sonu Saatler</label><input id="g-weekend"></div></div>
+        <p class="ap-sec-title" style="margin-top:24px;">🏠 Ana Sayfa</p>
+        <div class="ap-row full"><div class="ap-f"><label>Üst Etiket</label><input id="g-tag"></div></div>
+        <div class="ap-row full"><div class="ap-f"><label>Açıklama</label><textarea id="g-desc"></textarea></div></div>
+        <div class="ap-row full"><div class="ap-f"><label>Hakkımızda Metin</label><textarea id="g-about"></textarea></div></div>
+        <div class="ap-row"><div class="ap-f"><label>İstatistik 1</label><input id="g-s1"></div><div class="ap-f"><label>İstatistik 2</label><input id="g-s2"></div></div>
+        <div class="ap-save-bar"><button class="ap-btn ap-btn-red" onclick="saveGeneral()">💾 Kaydet</button></div>
+      </div>
+
+      <!-- TAB 1: Menu -->
+      <div class="ap-section" id="aps-1">
+        <p class="ap-sec-title">🍱 Menü Ürünleri — <span id="menu-branch-label"></span></p>
+        <div id="menu-editor"></div>
+        <button class="ap-btn ap-btn-dark" style="margin-top:8px;" onclick="addMenuItem()">+ Ürün Ekle</button>
+        <div class="ap-save-bar"><button class="ap-btn ap-btn-red" onclick="saveMenu()">💾 Menüyü Kaydet</button></div>
+      </div>
+
+      <!-- TAB 2: Campaign -->
+      <div class="ap-section" id="aps-2">
+        <p class="ap-sec-title">📢 Kampanya Şeridi</p>
+        <div class="ap-row" style="margin-bottom:16px;">
+          <div class="ap-f"><label>Şerit Durumu</label>
+            <select id="camp-active" onchange="toggleCampaignStrip()">
+              <option value="0">Kapalı</option>
+              <option value="1">Açık</option>
+            </select>
+          </div>
+        </div>
+        <div id="camp-editor"></div>
+        <button class="ap-btn ap-btn-dark" style="margin-top:8px;" onclick="addCampaign()">+ Kampanya Ekle</button>
+        <div class="ap-save-bar"><button class="ap-btn ap-btn-gold" onclick="saveCampaigns()">💾 Kaydet</button></div>
+      </div>
+
+      <!-- TAB 3: Orders -->
+      <div class="ap-section" id="aps-3">
+        <p class="ap-sec-title">📦 Siparişler — <span id="orders-branch-label"></span></p>
+        <div id="orders-list"></div>
+      </div>
+
+      <!-- TAB 4: Customers -->
+      <div class="ap-section" id="aps-4">
+        <p class="ap-sec-title">👥 Üyeler</p>
+        <button onclick="renderCustomersList()" style="margin-bottom:16px;background:var(--acc2);color:var(--bg);border:none;padding:8px 18px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-family:'Outfit',sans-serif;cursor:pointer;">🔄 Yenile</button>
+        <div id="customers-list"></div>
+      </div>
+
+      <!-- TAB 5: Theme -->
+      <div class="ap-section" id="aps-5">
+        <p class="ap-sec-title">🎨 Site Teması</p>
+        <div class="theme-grid">
+          <div>
+            <button class="theme-btn active" id="tb-dark" onclick="setTheme('dark')">
+              <div class="theme-swatch"><div class="ts-top" style="background:#0d0d0d;"></div><div class="ts-bot"><div class="ts-c" style="background:#c0392b;"></div><div class="ts-c" style="background:#d4a847;"></div><div class="ts-c" style="background:#1a1a1a;"></div></div></div>
+            </button>
+            <div class="theme-name">Karanlık</div>
+          </div>
+          <div>
+            <button class="theme-btn" id="tb-light" onclick="setTheme('light')">
+              <div class="theme-swatch"><div class="ts-top" style="background:#f5f0e8;"></div><div class="ts-bot"><div class="ts-c" style="background:#c0392b;"></div><div class="ts-c" style="background:#b8860b;"></div><div class="ts-c" style="background:#fffdf8;"></div></div></div>
+            </button>
+            <div class="theme-name">Aydınlık</div>
+          </div>
+          <div>
+            <button class="theme-btn" id="tb-ocean" onclick="setTheme('ocean')">
+              <div class="theme-swatch"><div class="ts-top" style="background:#030d16;"></div><div class="ts-bot"><div class="ts-c" style="background:#0288d1;"></div><div class="ts-c" style="background:#00bcd4;"></div><div class="ts-c" style="background:#071829;"></div></div></div>
+            </button>
+            <div class="theme-name">Okyanus</div>
+          </div>
+          <div>
+            <button class="theme-btn" id="tb-forest" onclick="setTheme('forest')">
+              <div class="theme-swatch"><div class="ts-top" style="background:#060e07;"></div><div class="ts-bot"><div class="ts-c" style="background:#2e7d32;"></div><div class="ts-c" style="background:#8bc34a;"></div><div class="ts-c" style="background:#0d1e0e;"></div></div></div>
+            </button>
+            <div class="theme-name">Orman</div>
+          </div>
+          <div>
+            <button class="theme-btn" id="tb-luxury" onclick="setTheme('luxury')">
+              <div class="theme-swatch"><div class="ts-top" style="background:#090705;"></div><div class="ts-bot"><div class="ts-c" style="background:#b8860b;"></div><div class="ts-c" style="background:#e8c84a;"></div><div class="ts-c" style="background:#140e08;"></div></div></div>
+            </button>
+            <div class="theme-name">Lüks</div>
+          </div>
+          <div>
+            <button class="theme-btn" id="tb-sakura" onclick="setTheme('sakura')">
+              <div class="theme-swatch"><div class="ts-top" style="background:#0a0508;"></div><div class="ts-bot"><div class="ts-c" style="background:#c2185b;"></div><div class="ts-c" style="background:#f48fb1;"></div><div class="ts-c" style="background:#160b10;"></div></div></div>
+            </button>
+            <div class="theme-name">🌸 Sakura</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 8: Reservations -->
+      <div class="ap-section" id="aps-8">
+        <p class="ap-sec-title">📅 Rezervasyonlar</p>
+        <button onclick="loadReservationsFromSupabase()" style="margin-bottom:16px;background:var(--acc2);color:var(--bg);border:none;padding:8px 18px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-family:'Outfit',sans-serif;cursor:pointer;">🔄 Yenile</button>
+        <div id="reservations-list"></div>
+      </div>
+
+      <!-- TAB 6: Security -->
+      <div class="ap-section" id="aps-6">
+        <p class="ap-sec-title">🔑 Admin Şifre Değiştir</p>
+        <div class="ap-row full"><div class="ap-f"><label>Mevcut Şifre</label><input id="sec-old" type="password" placeholder="••••••••"></div></div>
+        <div class="ap-row full"><div class="ap-f"><label>Yeni Şifre</label><input id="sec-new" type="password" placeholder="••••••••"></div></div>
+        <div class="ap-row full"><div class="ap-f"><label>Yeni Şifre Tekrar</label><input id="sec-new2" type="password" placeholder="••••••••"></div></div>
+        <div class="merr" id="sec-err" style="margin-top:10px;"></div>
+        <div class="mok" id="sec-ok" style="margin-top:10px;"></div>
+        <div class="ap-save-bar"><button class="ap-btn ap-btn-red" onclick="changeAdminPass()">🔒 Şifreyi Değiştir</button></div>
+
+        <p class="ap-sec-title" style="margin-top:28px;">➕ Yeni Admin Oluştur</p>
+        <p style="font-size:12px;color:var(--text3);margin-bottom:14px;font-weight:200;">Başka bir cihazdan admin girişi için ikinci bir şifre oluşturabilirsiniz.</p>
+        <div class="ap-row full"><div class="ap-f"><label>Yeni Admin Şifresi</label><input id="new-admin-pass" type="password" placeholder="••••••••"></div></div>
+        <div class="mok" id="new-admin-ok" style="margin-top:10px;"></div>
+        <div class="ap-save-bar"><button class="ap-btn ap-btn-gold" onclick="addAdminPass()">➕ Admin Şifresi Ekle</button></div>
+      </div>
+
+      <!-- TAB 7: Founder -->
+      <div class="ap-section" id="aps-7">
+        <p class="ap-sec-title">👤 Kurucu Profili</p>
+        <div style="margin-bottom:18px;">
+          <label style="font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:8px;">Fotoğraf</label>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div id="founder-preview" style="width:90px;height:110px;background:var(--bg3);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:36px;overflow:hidden;flex-shrink:0;">👤</div>
+            <div>
+              <input type="file" id="founder-img-input" accept="image/*" onchange="handleFounderImg(this)" style="display:none;">
+              <button class="ap-btn ap-btn-dark" onclick="document.getElementById('founder-img-input').click()">📷 Fotoğraf Yükle</button>
+              <p style="font-size:11px;color:var(--text3);margin-top:8px;font-weight:200;">JPG, PNG desteklenir</p>
+            </div>
+          </div>
+        </div>
+        <div class="ap-row">
+          <div class="ap-f"><label>Ad Soyad</label><input id="f-founder-name" placeholder="Adınız Soyadınız"></div>
+          <div class="ap-f"><label>Ünvan / Pozisyon</label><input id="f-founder-title" placeholder="Kurucu & CEO"></div>
+        </div>
+        <div class="ap-row full">
+          <div class="ap-f"><label>Biyografi (5-6 satır)</label><textarea id="f-founder-bio" rows="6" placeholder="Kısa biyografinizi yazın...&#10;2012'de İstanbul'da gastronomi okuyarak...&#10;2018'de Fujimi'yi kurdu..."></textarea></div>
+        </div>
+        <p class="ap-sec-title" style="margin-top:20px;">📅 Önemli Milestones</p>
+        <p style="font-size:11px;color:var(--text3);margin-bottom:14px;font-weight:200;">Önemli tarih ve başarılarınızı ekleyin (örn: "2015 — İlk şube açıldı")</p>
+        <div id="milestone-editor"></div>
+        <button class="ap-btn ap-btn-dark" style="margin-top:8px;" onclick="addMilestone()">+ Milestone Ekle</button>
+        <div class="ap-save-bar"><button class="ap-btn ap-btn-red" onclick="saveFounder()">💾 Kurucu Profilini Kaydet</button></div>
+      </div>
+
+      <!-- TAB 9: Instagram Photos -->
+      <div class="ap-section" id="aps-9">
+        <p class="ap-sec-title">📸 Instagram Fotoğrafları</p>
+        <p style="font-size:12px;color:var(--text3);font-weight:200;margin-bottom:24px;line-height:1.7;">Her hesap için fotoğraf yükleyin. Yüklenen fotoğraflar sayfanın altındaki Instagram bölümünde grid olarak görünür.</p>
+
+        <!-- fujimisushi -->
+        <div style="margin-bottom:36px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--bdr);">
+            <div style="width:32px;height:32px;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ig-g" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f09433"/><stop offset="25%" stop-color="#e6683c"/><stop offset="50%" stop-color="#dc2743"/><stop offset="75%" stop-color="#cc2366"/><stop offset="100%" stop-color="#bc1888"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="url(#ig-g)"/><circle cx="12" cy="12" r="4.5" stroke="white" stroke-width="1.5" fill="none"/><circle cx="17.5" cy="6.5" r="1" fill="white"/></svg></div>
+            <div>
+              <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;">@fujimisushi</div>
+              <div style="font-size:10px;color:var(--text3);letter-spacing:.08em;">Resmi Hesap</div>
+            </div>
+            <button class="ap-btn ap-btn-gold" style="margin-left:auto;" onclick="document.getElementById('ig-upload-fujimi').click()">+ Fotoğraf Ekle</button>
+            <input type="file" id="ig-upload-fujimi" accept="image/*" multiple style="display:none;" onchange="handleInstaUpload(this,'fujimisushi')">
+          </div>
+          <div id="ig-grid-fujimisushi" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;min-height:60px;"></div>
+        </div>
+
+        <!-- cheffiratyasin -->
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--bdr);">
+            <div style="width:32px;height:32px;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ig-g2" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f09433"/><stop offset="25%" stop-color="#e6683c"/><stop offset="50%" stop-color="#dc2743"/><stop offset="75%" stop-color="#cc2366"/><stop offset="100%" stop-color="#bc1888"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="url(#ig-g2)"/><circle cx="12" cy="12" r="4.5" stroke="white" stroke-width="1.5" fill="none"/><circle cx="17.5" cy="6.5" r="1" fill="white"/></svg></div>
+            <div>
+              <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;">@cheffiratyasin</div>
+              <div style="font-size:10px;color:var(--text3);letter-spacing:.08em;">Chef Hesabı</div>
+            </div>
+            <button class="ap-btn ap-btn-gold" style="margin-left:auto;" onclick="document.getElementById('ig-upload-chef').click()">+ Fotoğraf Ekle</button>
+            <input type="file" id="ig-upload-chef" accept="image/*" multiple style="display:none;" onchange="handleInstaUpload(this,'cheffiratyasin')">
+          </div>
+          <div id="ig-grid-cheffiratyasin" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;min-height:60px;"></div>
+        </div>
+
+        <div class="ap-save-bar"><button class="ap-btn ap-btn-red" onclick="saveInstaPhotos()">💾 Fotoğrafları Kaydet</button></div>
+      </div>
+
+      <!-- TAB 10: Masa QR -->
+      <div class="ap-section" id="aps-10">
+        <p class="ap-sec-title">&#127975; Masa QR Kodlar&#305;</p>
+        <p style="font-size:12px;color:var(--text3);font-weight:200;margin-bottom:20px;line-height:1.7;">Her masa i&#231;in QR kod &#252;retin. M&#252;&#351;teri QR'&#305; taray&#305;nca masa numaras&#305; otomatik alg&#305;lan&#305;r.</p>
+        <div class="ap-row" style="margin-bottom:20px;align-items:flex-end;gap:12px;">
+          <div class="ap-f"><label>Masa Say&#305;s&#305;</label>
+            <input type="number" id="qr-table-count" value="10" min="1" max="50" style="width:100px;">
+          </div>
+          <button class="ap-btn ap-btn-gold" onclick="generateQRCodes()">QR &#220;ret</button>
+          <button class="ap-btn ap-btn-dark" onclick="printQRCodes()">&#128424; Yazd&#305;r</button>
+        </div>
+        <div id="qr-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://japbfazrtehawgaqzbnz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphcGJmYXpydGVoYXdnYXF6Ym56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNzMyMzcsImV4cCI6MjA4ODY0OTIzN30.2oA3pFAI9PV3Tr6jQIGoc7073kO0m_IRcw7_0Uru6H0';
+let sbClient = null;
+try { const {createClient}=window.supabase; sbClient=createClient(SUPABASE_URL,SUPABASE_KEY); } catch(e){}
+
+// ============================================================
+// DATA STORE
+// ============================================================
+const STORE_KEY = 'fujimi_v3';
+let DB = loadDB();
+
+function defaultDB(){
+  return {
+    adminPasswords: ['0719050507'],
+    theme: 'dark',
+    branches: [
+      { id:'b1', name:'Lara Şubesi',      addr:'Lara Cad. No:1, Antalya',      phone:'📞 0505 742 32 07', email:'firatyasinozturk@gmail.com', hours:'12:00–23:00', weekend:'11:00–00:00' },
+      { id:'b2', name:'Konyaaltı Şubesi', addr:'Konyaaltı Cad. No:5, Antalya', phone:'📞 0505 742 32 07', email:'firatyasinozturk@gmail.com', hours:'12:00–23:00', weekend:'11:00–00:00' },
+    ],
+    global: {
+      tag:'Tokyo\'dan İstanbul\'a',
+      desc:'Japon mutfağının inceliği ile Asya\'nın cesur aromaları bir arada. Her tabak, her lokma — saf bir sanat eseri.',
+      about:'Fujimi — Japonca\'da "fuji dağını görmek" anlamına gelir. Her tabakta o zirveli deneyimi sunmayı hedefliyoruz.',
+      s1:'12+', s2:'60+', s3:'★4.9',
+    },
+    menus: {
+      b1: defaultMenu(),
+      b2: defaultMenu(),
+    },
+    campaigns: { active: false, items: [] },
+    orders: [],
+    users: [],
+    founder: {
+      name: '',
+      title: 'Fujimi Sushi & Wok — Kurucu & CEO',
+      bio: '',
+      img: '',
+      milestones: []
+    },
+    instagram: {
+      fujimisushi: [],
+      cheffiratyasin: []
+    },
+  };
+}
+
+function defaultMenu(){
+  return [
+    {id:uid(),emoji:'🍣',cat:'Signature Roll',name:'Fujimi Dragon Roll',desc:'Karides tempura, avokado, sriracha mayonez, tobiko üstü',price:'385',unit:'8 adet',img:''},
+    {id:uid(),emoji:'🐟',cat:'Sashimi',name:'Somon Sashimi',desc:'Premium Norveç somonu, taze zencefil, wasabi',price:'320',unit:'6 adet',img:''},
+    {id:uid(),emoji:'🍜',cat:'Wok Special',name:'Pad Thai Wok',desc:'Pirinç eriştesi, karides, yer fıstığı, tamarind sosu',price:'295',unit:'porsiyon',img:''},
+    {id:uid(),emoji:'🥩',cat:'Wok Premium',name:'Wagyu Teriyaki Wok',desc:'A5 Wagyu dilim, wok sebzeleri, teriyaki glaze',price:'580',unit:'porsiyon',img:''},
+    {id:uid(),emoji:'🍥',cat:'Ramen',name:'Tonkotsu Ramen',desc:'18 saat kemik suyu, chashu, ajitsuke tamago, nori',price:'340',unit:'porsiyon',img:''},
+    {id:uid(),emoji:'🥗',cat:'Starter',name:'Edamame & Miso',desc:'Deniz tuzlu edamame, geleneksel miso çorbası',price:'175',unit:'porsiyon',img:''},
+  ];
+}
+
+// Japonca isim üretici
+function getJapaneseName(name){
+  const map = {
+    'sushi':'寿司','ramen':'ラーメン','wok':'ウォック','sashimi':'刺身',
+    'tempura':'天ぷら','roll':'ロール','dragon':'ドラゴン','miso':'味噌',
+    'tonkotsu':'豚骨','pad thai':'パッタイ','wagyu':'和牛','teriyaki':'照り焼き',
+    'edamame':'枝豆','gyoza':'餃子','udon':'うどん','sake':'鮭',
+    'tuna':'マグロ','salmon':'サーモン','shrimp':'海老','crab':'蟹',
+    'avocado':'アボカド','spicy':'スパイシー','special':'スペシャル',
+    'premium':'プレミアム','signature':'シグネチャー','california':'カリフォルニア',
+    'rainbow':'レインボー','volcano':'ボルケーノ','spider':'スパイダー',
+    'mango':'マンゴー','starter':'スターター','soup':'スープ','noodle':'麺',
+  };
+  const lower = name.toLowerCase();
+  for(const [key, val] of Object.entries(map)){
+    if(lower.includes(key)) return val;
+  }
+  // Bulunamazsa katakana benzeri dönüşüm
+  return '料理'; // "Ryouri" = yemek
+}
+
+function uid(){ return '_'+Math.random().toString(36).slice(2,9); }
+
+function loadDB(){
+  try{ const s=localStorage.getItem(STORE_KEY); if(s) return JSON.parse(s); }catch(e){}
+  return defaultDB();
+}
+
+async function saveDB(){ 
+  try{ localStorage.setItem(STORE_KEY,JSON.stringify(DB)); }catch(e){}
+  // Supabase'e de kaydet — tüm cihazlar görsün
+  if(sbClient){
+    try{
+      await sbClient.from('site_data').upsert({key:'main_db', value:JSON.stringify(DB)},{onConflict:'key'});
+    }catch(e){ console.error('Supabase kayıt hatası:',e); }
+  }
+}
+
+async function loadDBFromSupabase(){
+  if(!sbClient) return;
+  try{
+    const {data,error} = await sbClient.from('site_data').select('value').eq('key','main_db').single();
+    if(data && data.value){
+      const remote = JSON.parse(data.value);
+      DB = remote;
+      // Şifreleri local'den koru
+      const local = JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
+      if(local && local.adminPasswords) DB.adminPasswords = local.adminPasswords;
+      // Şube menus kontrol
+      DB.branches.forEach(b=>{ if(!DB.menus[b.id]) DB.menus[b.id]=defaultMenu(); });
+      if(!DB.founder) DB.founder = {name:'',title:'Fujimi Sushi & Wok — Kurucu & CEO',bio:'',img:'',milestones:[]};
+      if(!DB.instagram) DB.instagram = {fujimisushi:[],cheffiratyasin:[]};
+      try{ localStorage.setItem(STORE_KEY,JSON.stringify(DB)); }catch(e){}
+      renderAll();
+      // Admin paneli açıksa onu da güncelle
+      if(isAdmin) loadBranchData();
+    }
+  }catch(e){ console.log('Supabase yükleme:', e); }
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let currentUser = null;  // {id, name, email, phone, blocked}
+let isAdmin = false;
+let adminBranch = DB.branches[0]?.id || 'b1';
+let selectedBranch = DB.branches[0]?.id || 'b1';
+let cart = [];  // {menuItem, qty}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', ()=>{
+  DB.branches.forEach(b=>{ if(!DB.menus[b.id]) DB.menus[b.id]=defaultMenu(); });
+  if(!DB.founder) DB.founder = {name:'',title:'Fujimi Sushi & Wok — Kurucu & CEO',bio:'',img:'',milestones:[]};
+  if(!DB.instagram) DB.instagram = {fujimisushi:[],cheffiratyasin:[]};
+  renderAll();
+  initCursor();
+  initSakuraCanvas();
+  initReveal();
+  // Supabase'den güncel veriyi yükle
+  loadDBFromSupabase();
+  // Realtime: başka cihazdan değişiklik olunca güncelle
+  if(sbClient){
+    sbClient.channel('site-data-sync')
+      .on('postgres_changes',{event:'*',schema:'public',table:'site_data',filter:'key=eq.main_db'},
+        ()=>{ loadDBFromSupabase(); }
+      ).subscribe();
+  }
+});
+
+function renderAll(){
+  renderGlobal();
+  renderBranchPublic();
+  renderMenuGrid();
+  renderCampaignStrip();
+  renderFounder();
+  renderInstaPublic();
+  renderFavSection();
+  updateNavUI();
+}
+
+// ============================================================
+// GLOBAL INFO
+// ============================================================
+function renderGlobal(){
+  const g = DB.global;
+  // Saat bazlı Japonca karşılama
+  const _hr = new Date().getHours();
+  let _greeting;
+  if(_hr >= 5 && _hr < 12)       _greeting = "オハヨウ · Ohayo · Günaydın";
+  else if(_hr >= 12 && _hr < 17) _greeting = "こんにちは · Konnichiwa · İyi Günler";
+  else if(_hr >= 17 && _hr < 21) _greeting = "こんばんは · Konbanwa · İyi Akşamlar";
+  else                            _greeting = "いらっしゃいませ · Irasshaimase · Hoş Geldiniz";
+  setText('d-tag', _greeting);
+  setText('d-desc', g.desc);
+  setText('d-about', g.about);
+  setText('d-s1', g.s1);
+  setText('d-s2', g.s2);
+  setText('d-s3', g.s3);
+  const br = getBranch(selectedBranch);
+  if(br){
+    setText('d-address', br.addr);
+    setText('d-phone', br.phone);
+    setText('d-email', br.email);
+    setText('d-hours', 'Pzt–Cum: '+br.hours);
+    setText('d-weekend', 'Hft Sonu: '+br.weekend);
+  }
+}
+
+function getText(id){ const el=document.getElementById(id); return el?el.textContent:''; }
+function setText(id,val){ const el=document.getElementById(id); if(el) el.textContent=val; }
+
+function getBranch(id){ return DB.branches.find(b=>b.id===id); }
+
+// ============================================================
+// BRANCH PUBLIC
+// ============================================================
+function renderBranchPublic(){
+  const c = document.getElementById('bb-branches');
+  if(!c) return;
+  c.innerHTML = DB.branches.map(b=>`
+    <button class="bb-btn ${selectedBranch===b.id?'active':''}" onclick="selectBranch('${b.id}')">${b.name}</button>`
+  ).join('');
+  // warn if none selected
+  const warn = document.getElementById('bb-warn');
+  if(warn) warn.classList.toggle('show', !selectedBranch);
+}
+
+function selectBranch(id){
+  selectedBranch = id;
+  cart = [];
+  renderBranchPublic();
+  renderMenuGrid();
+  renderGlobal();
+  updateCartBtn();
+  const br = getBranch(id);
+  if(br){
+    notify(`✓ ${br.name} seçildi`, 'ok');
+    if(window._autoMasa){ setTimeout(()=>notify(`🪧 Masa ${window._autoMasa} — hoş geldiniz!`,'info'),800); }
+  }
+}
+
+// ============================================================
+// MENU GRID (PUBLIC)
+// ============================================================
+function renderMenuGrid(){
+  const grid = document.getElementById('menu-grid');
+  if(!grid) return;
+  const items = DB.menus[selectedBranch] || [];
+  if(!items.length){ grid.innerHTML='<p style="padding:40px;color:var(--text3);font-size:14px;">Henüz menü ürünü eklenmemiş.</p>'; return; }
+  grid.innerHTML = items.map(item=>`
+    <div class="mcard">
+      <div class="mcard-img">
+        ${item.img ? `<img src="${item.img}" alt="${item.name}">` : item.emoji}
+      </div>
+      <div class="mcard-body">
+        <div class="mcard-info">
+          <p class="mcard-cat">${item.cat}</p>
+          <h3 class="mcard-name">${item.name}</h3>
+          <p class="mcard-desc">${item.desc}</p>
+        </div>
+        <div class="mcard-foot">
+          <div><div class="mcard-price">₺${item.price}</div><div class="mcard-unit">${item.unit}</div></div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <button class="fav-btn ${isFav(item.id)?'active':''}" onclick="toggleFav('${item.id}')">♥</button>
+            <button class="add-to-cart" onclick="addToCart('${item.id}')">+ Ekle</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ============================================================
+// TAM MENÜ MODAL
+// ============================================================
+let fmBranch = null;
+
+function openFullMenu(){
+  fmBranch = selectedBranch || DB.branches[0]?.id;
+  const overlay = document.getElementById('full-menu-overlay');
+  overlay.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  renderFmBranchTabs();
+  renderFmGrid();
+}
+
+function closeFullMenu(){
+  document.getElementById('full-menu-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function renderFmBranchTabs(){
+  const c = document.getElementById('fm-branch-tabs');
+  if(!c) return;
+  c.innerHTML = DB.branches.map(b=>`
+    <button onclick="switchFmBranch('${b.id}')" style="padding:9px 18px;font-size:10px;letter-spacing:.13em;text-transform:uppercase;font-family:'Outfit',sans-serif;font-weight:500;cursor:pointer;border:none;background:${fmBranch===b.id?'var(--acc)':'transparent'};color:${fmBranch===b.id?'#fff':'var(--text2)'};transition:all .3s;">${b.name}</button>`
+  ).join('');
+  const br = getBranch(fmBranch);
+  setText('fm-branch-label', br ? br.name + ' — Tüm Ürünler' : '');
+}
+
+function switchFmBranch(id){
+  fmBranch = id;
+  renderFmBranchTabs();
+  renderFmGrid();
+}
+
+function renderFmGrid(){
+  const grid = document.getElementById('fm-menu-grid');
+  if(!grid) return;
+  const items = DB.menus[fmBranch] || [];
+  if(!items.length){
+    grid.style.background = 'transparent';
+    grid.innerHTML = '<p style="padding:60px;color:var(--text3);font-size:15px;text-align:center;">Bu şubeye ait menü ürünü henüz eklenmemiş.</p>';
+    return;
+  }
+  grid.style.background = 'var(--bdr)';
+  grid.innerHTML = items.map(item=>`
+    <div class="mcard">
+      <div class="mcard-img">
+        ${item.img ? `<img src="${item.img}" alt="${item.name}">` : item.emoji}
+      </div>
+      <div class="mcard-body">
+        <div class="mcard-info">
+          <p class="mcard-cat">${item.cat}</p>
+          <h3 class="mcard-name">${item.name}</h3>
+          <p class="mcard-desc">${item.desc}</p>
+        </div>
+        <div class="mcard-foot">
+          <div><div class="mcard-price">₺${item.price}</div><div class="mcard-unit">${item.unit}</div></div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <button class="fav-btn ${isFav(item.id)?'active':''}" onclick="toggleFav('${item.id}')">♥</button>
+            <button class="add-to-cart" onclick="addToCart('${item.id}')">+ Ekle</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ESC tuşu ile kapat
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeFullMenu(); });
+
+// ============================================================
+// CAMPAIGN STRIP
+// ============================================================
+function renderCampaignStrip(){
+  const strip = document.getElementById('camp-strip');
+  const track = document.getElementById('camp-track');
+  if(!strip||!track) return;
+  const c = DB.campaigns;
+  if(!c.active || !c.items.length){ strip.classList.remove('on'); return; }
+  strip.classList.add('on');
+  const html = c.items.map(ci=>`
+    <div class="camp-item">
+      <div class="camp-thumb">
+        ${ci.img ? `<img src="${ci.img}" alt="">` : ci.emoji||'🎉'}
+      </div>
+      <span class="camp-text">${ci.name}</span>
+      <span class="camp-price">₺${ci.price}</span>
+      <span class="camp-sep">·</span>
+    </div>`).join('');
+  track.innerHTML = html+html; // duplicate for infinite scroll
+}
+
+// ============================================================
+// CART
+// ============================================================
+function addToCart(itemId){
+  if(!currentUser){ openAuth('login'); notify('Sipariş için giriş yapın', 'err'); return; }
+  if(!selectedBranch){
+    notify('⚠ Lütfen önce şube seçin', 'err');
+    // Flash the branch bar
+    const bar = document.getElementById('branch-bar');
+    if(bar){ bar.style.background='rgba(192,57,43,.3)'; setTimeout(()=>bar.style.background='', 800); }
+    const warn = document.getElementById('bb-warn');
+    if(warn) warn.classList.add('show');
+    return;
+  }
+  if(currentUser.blocked){ notify('Hesabınız engellenmiştir', 'err'); return; }
+  const item = (DB.menus[selectedBranch]||[]).find(i=>i.id===itemId);
+  if(!item) return;
+  const ex = cart.find(c=>c.id===itemId);
+  if(ex) ex.qty++;
+  else cart.push({id:itemId, name:item.name, price:item.price, qty:1});
+  updateCartBtn();
+  notify(item.name+' sepete eklendi', 'ok');
+}
+
+function updateCartBtn(){
+  const btn = document.getElementById('cart-btn');
+  const count = cart.reduce((s,c)=>s+c.qty, 0);
+  document.getElementById('cart-count').textContent = count;
+  btn.style.display = (currentUser && count>0) ? 'inline-flex' : 'none';
+}
+
+function openCart(){
+  const br = getBranch(selectedBranch);
+  setText('cart-branch-label', br ? br.name : 'Şube seçilmedi');
+  renderCartModal();
+  openModal('cart-modal');
+}
+
+function renderCartModal(){
+  const body = document.getElementById('cart-modal-body');
+  if(!cart.length){ body.innerHTML='<p style="color:var(--text3);font-size:13px;padding:12px 0;">Sepetiniz boş.</p>'; setText('cart-total-val','₺0'); return; }
+  body.innerHTML = cart.map(c=>`
+    <div class="cart-item">
+      <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;">
+        <span class="cart-item-name">${c.name}</span>
+        <span style="font-size:10px;color:var(--acc2);letter-spacing:.04em;font-family:'Playfair Display',serif;">${getJapaneseName(c.name)}</span>
+      </div>
+      <div class="cart-item-qty">
+        <button class="qty-btn" onclick="changeQty('${c.id}',-1)">−</button>
+        <span>${c.qty}</span>
+        <button class="qty-btn" onclick="changeQty('${c.id}',1)">+</button>
+      </div>
+      <span class="cart-item-price">₺${(parseInt(c.price)*c.qty)}</span>
+    </div>`).join('');
+  const total = cart.reduce((s,c)=>s+parseInt(c.price)*c.qty, 0);
+  setText('cart-total-val','₺'+total);
+}
+
+function changeQty(id, delta){
+  const c = cart.find(x=>x.id===id);
+  if(!c) return;
+  c.qty += delta;
+  if(c.qty<=0) cart = cart.filter(x=>x.id!==id);
+  renderCartModal();
+  updateCartBtn();
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+function openAuth(tab){
+  switchAuthTab(tab);
+  openModal('auth-modal');
+}
+
+function switchAuthTab(tab){
+  document.getElementById('tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('tab-register').classList.toggle('active', tab==='register');
+  document.getElementById('form-login').style.display = tab==='login'?'':'none';
+  document.getElementById('form-register').style.display = tab==='register'?'':'none';
+}
+
+function doLogin(){
+  const email = document.getElementById('l-email').value.trim().toLowerCase();
+  const pass = document.getElementById('l-pass').value;
+  const err = document.getElementById('l-err');
+  if(!email||!pass){ showEl(err,'E-posta ve şifre gerekli'); return; }
+  const user = DB.users.find(u=>u.email===email && u.pass===pass);
+  if(!user){ showEl(err,'E-posta veya şifre hatalı'); return; }
+  if(user.blocked){ showEl(err,'Hesabınız engellenmiştir. İletişime geçin.'); return; }
+  currentUser = user;
+  closeModal('auth-modal');
+  updateNavUI();
+  notify('Hoş geldiniz, '+user.name+'!', 'ok');
+}
+
+async function doRegister(){
+  const name = document.getElementById('r-name').value.trim();
+  const email = document.getElementById('r-email').value.trim().toLowerCase();
+  const phone = document.getElementById('r-phone').value.trim();
+  const pass = document.getElementById('r-pass').value;
+  const pass2 = document.getElementById('r-pass2').value;
+  const err = document.getElementById('r-err');
+  const ok = document.getElementById('r-ok');
+  if(!name||!email||!phone||!pass){ showEl(err,'Tüm alanları doldurun'); return; }
+  if(pass.length<6){ showEl(err,'Şifre en az 6 karakter olmalı'); return; }
+  if(pass!==pass2){ showEl(err,'Şifreler eşleşmiyor'); return; }
+  if(DB.users.find(u=>u.email===email)){ showEl(err,'Bu e-posta zaten kayıtlı'); return; }
+  const user = {id:uid(), name, email, phone, pass, blocked:false, date: new Date().toLocaleString('tr-TR')};
+  DB.users.push(user);
+  await saveDB();
+  err.style.display='none';
+  showEl(ok,'Kayıt başarılı! Giriş yapabilirsiniz.');
+  setTimeout(()=>{ switchAuthTab('login'); document.getElementById('l-email').value=email; }, 1500);
+}
+
+function logout(){
+  currentUser = null;
+  isAdmin = false;
+  cart = [];
+  updateCartBtn();
+  updateNavUI();
+  notify('Çıkış yapıldı', 'info');
+  // Update corner button
+  document.getElementById('corner-btn').innerHTML = `
+    <button class="cbtn cbtn-gold" onclick="openAdminPanel()">⚙ Yönetim</button>
+    <button class="cbtn cbtn-dark" onclick="openAuth('login')">🔑 Giriş / Üye Ol</button>`;
+}
+
+function updateNavUI(){
+  const guest = document.getElementById('nav-guest');
+  const loggedin = document.getElementById('nav-loggedin');
+  if(currentUser){
+    guest.style.display = 'none';
+    loggedin.style.display = 'flex';
+    const unameBtn = document.getElementById('nav-uname');
+    if(unameBtn) unameBtn.textContent = '👤 ' + currentUser.name;
+    const badge = document.getElementById('nav-branch-badge');
+    const br = getBranch(selectedBranch);
+    if(badge) badge.textContent = br ? br.name : '';
+    renderFavSection();
+    // update corner btn
+    const cb = document.getElementById('corner-btn');
+    cb.innerHTML = `
+      <button class="cbtn cbtn-gold" onclick="openAdminPanel()">⚙ Yönetim</button>
+      <button class="cbtn cbtn-dark" onclick="logout()">🚪 Çıkış (${currentUser.name})</button>`;
+  } else {
+    guest.style.display = 'flex';
+    loggedin.style.display = 'none';
+    const cb = document.getElementById('corner-btn');
+    cb.innerHTML = `
+      <button class="cbtn cbtn-gold" onclick="openAdminPanel()">⚙ Yönetim</button>
+      <button class="cbtn cbtn-dark" onclick="openAuth('login')">🔑 Giriş / Üye Ol</button>`;
+  }
+}
+
+// ============================================================
+// ADMIN
+// ============================================================
+function openAdminPanel(){
+  if(!isAdmin){ openModal('admin-login-modal'); return; }
+  loadAdminPanel();
+  document.getElementById('admin-panel-overlay').classList.add('open');
+}
+
+function closeAdminPanel(){
+  document.getElementById('admin-panel-overlay').classList.remove('open');
+}
+
+function doAdminLogin(){
+  const pass = document.getElementById('ap-pass').value;
+  const err = document.getElementById('ap-err');
+  if(DB.adminPasswords.includes(pass)){
+    isAdmin = true;
+    closeModal('admin-login-modal');
+    document.getElementById('ap-pass').value = '';
+    loadAdminPanel();
+    document.getElementById('admin-panel-overlay').classList.add('open');
+    notify('Admin girişi başarılı', 'ok');
+  } else {
+    showEl(err, 'Hatalı şifre');
+  }
+}
+
+function loadAdminPanel(){
+  renderBranchBtns();
+  loadBranchData();
+  apTab(0);
+}
+
+function renderBranchBtns(){
+  const c = document.getElementById('ap-branch-btns');
+  c.innerHTML = DB.branches.map(b=>`
+    <button class="br-switch-btn ${adminBranch===b.id?'active':''}" onclick="switchAdminBranch('${b.id}')">${b.name}</button>`).join('');
+  setText('ap-branch-title', 'Şube: '+(getBranch(adminBranch)?.name||'—'));
+}
+
+function switchAdminBranch(id){
+  adminBranch = id;
+  renderBranchBtns();
+  loadBranchData();
+}
+
+function loadBranchData(){
+  const br = getBranch(adminBranch);
+  if(!br) return;
+  const g = DB.global;
+  // General tab
+  setVal('g-brname', br.name);
+  setVal('g-address', br.addr);
+  setVal('g-phone', br.phone);
+  setVal('g-email', br.email);
+  setVal('g-hours', br.hours);
+  setVal('g-weekend', br.weekend);
+  setVal('g-tag', g.tag);
+  setVal('g-desc', g.desc);
+  setVal('g-about', g.about);
+  setVal('g-s1', g.s1);
+  setVal('g-s2', g.s2);
+  // Menu tab
+  setText('menu-branch-label', br.name);
+  setText('orders-branch-label', br.name);
+  renderMenuEditor();
+  renderCampaignEditor();
+  renderOrdersList();
+  renderCustomersList();
+  // Campaign status
+  const sel = document.getElementById('camp-active');
+  if(sel) sel.value = DB.campaigns.active ? '1' : '0';
+}
+
+function setVal(id, val){ const el=document.getElementById(id); if(el) el.value=val||''; }
+function getVal(id){ const el=document.getElementById(id); return el?el.value:''; }
+
+// ============================================================
+// ADMIN TABS
+// ============================================================
+function apTab(idx){
+  document.querySelectorAll('.aptab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.ap-section').forEach(s=>s.classList.remove('active'));
+  const sec=document.getElementById('aps-'+idx);
+  if(sec) sec.classList.add('active');
+  // Aktif tab butonunu işaretle
+  const tabs=document.querySelectorAll('.aptab');
+  const tabMap={0:0,1:1,2:2,3:3,4:4,8:5,5:6,6:7,7:8,9:9,10:10};
+  const tabIdx=tabMap[idx];
+  if(tabIdx!==undefined && tabs[tabIdx]) tabs[tabIdx].classList.add('active');
+  if(idx===3) loadOrdersFromSupabase();
+  if(idx===4) renderCustomersList();
+  if(idx===7) loadFounderForm();
+  if(idx===8) loadReservationsFromSupabase();
+  if(idx===9) renderInstaAdminGrids();
+}
+
+// ============================================================
+// SAVE GENERAL
+// ============================================================
+async function saveGeneral(){
+  const br = getBranch(adminBranch);
+  if(!br) return;
+  br.name = getVal('g-brname');
+  br.addr = getVal('g-address');
+  br.phone = getVal('g-phone');
+  br.email = getVal('g-email');
+  br.hours = getVal('g-hours');
+  br.weekend = getVal('g-weekend');
+  DB.global.tag = getVal('g-tag');
+  DB.global.desc = getVal('g-desc');
+  DB.global.about = getVal('g-about');
+  DB.global.s1 = getVal('g-s1');
+  DB.global.s2 = getVal('g-s2');
+  await saveDB();
+  renderAll();
+  renderBranchBtns();
+  renderBranchPublic();
+  notify('Kaydedildi ✓', 'ok');
+}
+
+// ============================================================
+// MENU EDITOR
+// ============================================================
+function renderMenuEditor(){
+  const items = DB.menus[adminBranch] || [];
+  document.getElementById('menu-editor').innerHTML = items.map((item,i)=>`
+    <div class="mei" id="mei-${item.id}">
+      <div class="mei-hd">
+        <div>
+          <label style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:5px;">Görsel</label>
+          <div class="mei-img-preview" id="mei-prev-${item.id}">
+            ${item.img ? `<img src="${item.img}" alt="">` : `<span style="font-size:28px;">${item.emoji}</span>`}
+            <input type="file" accept="image/*" onchange="handleMenuImg(this,'${item.id}')">
+          </div>
+        </div>
+        <div class="ap-f"><label>Kategori</label><input id="mei-cat-${item.id}" value="${item.cat}"></div>
+        <div class="ap-f"><label>Ürün Adı</label><input id="mei-name-${item.id}" value="${item.name}"></div>
+        <div class="ap-f"><label>Fiyat (₺)</label><input id="mei-price-${item.id}" value="${item.price}" style="width:80px;"></div>
+        <div class="ap-f"><label>Birim</label><input id="mei-unit-${item.id}" value="${item.unit}" style="width:80px;"></div>
+        <button class="mei-del" onclick="delMenuItem('${item.id}')">✕</button>
+      </div>
+      <div class="ap-f" style="margin-top:6px;"><label>Açıklama</label><input id="mei-desc-${item.id}" value="${item.desc}"></div>
+      <div class="ap-f" style="margin-top:6px;"><label>Emoji (görsel yoksa)</label><input id="mei-emoji-${item.id}" value="${item.emoji}" style="width:80px;font-size:18px;text-align:center;"></div>
+    </div>`).join('');
+}
+
+function handleMenuImg(input, itemId){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const canvas = document.createElement('canvas');
+      const max = 500;
+      let w = img.width, h = img.height;
+      if(w > max){ h = Math.round(h*max/w); w = max; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL('image/jpeg', 0.75);
+      const item = (DB.menus[adminBranch]||[]).find(i=>i.id===itemId);
+      if(item) item.img = compressed;
+      const prev = document.getElementById('mei-prev-'+itemId);
+      if(prev) prev.innerHTML = `<img src="${compressed}" alt=""><input type="file" accept="image/*" onchange="handleMenuImg(this,'${itemId}')">`;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function addMenuItem(){
+  if(!DB.menus[adminBranch]) DB.menus[adminBranch] = [];
+  DB.menus[adminBranch].push({id:uid(),emoji:'🍽️',cat:'Kategori',name:'Yeni Ürün',desc:'Açıklama',price:'0',unit:'porsiyon',img:''});
+  renderMenuEditor();
+}
+
+function delMenuItem(id){
+  DB.menus[adminBranch] = (DB.menus[adminBranch]||[]).filter(i=>i.id!==id);
+  renderMenuEditor();
+}
+
+async function saveMenu(){
+  const items = DB.menus[adminBranch] || [];
+  items.forEach(item=>{
+    item.cat = getVal('mei-cat-'+item.id);
+    item.name = getVal('mei-name-'+item.id);
+    item.price = getVal('mei-price-'+item.id);
+    item.unit = getVal('mei-unit-'+item.id);
+    item.desc = getVal('mei-desc-'+item.id);
+    item.emoji = getVal('mei-emoji-'+item.id);
+  });
+  await saveDB();
+  renderMenuGrid();
+  notify('Menü kaydedildi ✓', 'ok');
+}
+
+// ============================================================
+// CAMPAIGN EDITOR
+// ============================================================
+function renderCampaignEditor(){
+  const items = DB.campaigns.items || [];
+  document.getElementById('camp-editor').innerHTML = items.map((ci,i)=>`
+    <div class="camp-editor-item">
+      <div class="camp-thumb-edit" id="ct-prev-${ci.id}">
+        ${ci.img ? `<img src="${ci.img}" alt="">` : (ci.emoji||'🎉')}
+        <input type="file" accept="image/*" onchange="handleCampImg(this,'${ci.id}')">
+      </div>
+      <div class="ap-f"><label>Kampanya Adı</label><input id="ci-name-${ci.id}" value="${ci.name}"></div>
+      <div class="ap-f"><label>Fiyat</label><input id="ci-price-${ci.id}" value="${ci.price}" style="width:80px;"></div>
+      <div class="ap-f"><label>Emoji</label><input id="ci-emoji-${ci.id}" value="${ci.emoji||'🎉'}" style="width:60px;font-size:18px;text-align:center;"></div>
+      <button class="mei-del" onclick="delCampaign('${ci.id}')">✕</button>
+    </div>`).join('');
+}
+
+function handleCampImg(input, id){
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    const ci = (DB.campaigns.items||[]).find(c=>c.id===id);
+    if(ci) ci.img = e.target.result;
+    const prev = document.getElementById('ct-prev-'+id);
+    if(prev) prev.innerHTML = `<img src="${e.target.result}" alt=""><input type="file" accept="image/*" onchange="handleCampImg(this,'${id}')">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function addCampaign(){
+  if(!DB.campaigns.items) DB.campaigns.items = [];
+  DB.campaigns.items.push({id:uid(),name:'Yeni Kampanya',price:'0',emoji:'🎉',img:''});
+  renderCampaignEditor();
+}
+
+function delCampaign(id){
+  DB.campaigns.items = (DB.campaigns.items||[]).filter(c=>c.id!==id);
+  renderCampaignEditor();
+}
+
+async function toggleCampaignStrip(){
+  DB.campaigns.active = document.getElementById('camp-active').value === '1';
+  renderCampaignStrip();
+  await saveDB();
+}
+
+async function saveCampaigns(){
+  (DB.campaigns.items||[]).forEach(ci=>{
+    ci.name = getVal('ci-name-'+ci.id);
+    ci.price = getVal('ci-price-'+ci.id);
+    ci.emoji = getVal('ci-emoji-'+ci.id);
+  });
+  DB.campaigns.active = document.getElementById('camp-active').value === '1';
+  await saveDB();
+  renderCampaignStrip();
+  notify('Kampanyalar kaydedildi ✓', 'ok');
+}
+
+// ============================================================
+// ORDERS
+// ============================================================
+function renderOrdersList(){
+  const orders = DB.orders.filter(o=>o.branchId===adminBranch);
+  const c = document.getElementById('orders-list');
+  if(!orders.length){ c.innerHTML='<p style="color:var(--text3);font-size:13px;padding:20px 0;">Henüz sipariş yok.</p>'; return; }
+  c.innerHTML = `<table class="orders-table">
+    <thead><tr><th>Tarih</th><th>Müşteri</th><th>Ürünler</th><th>Toplam</th><th>Adres</th><th>Durum</th><th></th></tr></thead>
+    <tbody>${orders.map(o=>`
+    <tr>
+      <td style="white-space:nowrap;">${o.date}</td>
+      <td>${o.user_name||o.userName||''}<br><span style="font-size:10px;color:var(--text3);">${o.user_phone||o.userPhone||''}</span></td>
+      <td>${o.items.map(i=>`${i.name} x${i.qty}`).join('<br>')}</td>
+      <td style="white-space:nowrap;font-family:'Playfair Display',serif;color:var(--acc2);">₺${o.total}</td>
+      <td style="font-size:11px;max-width:140px;">${o.address}</td>
+      <td><span class="order-status os-${o.status}">${o.status==='new'?'Yeni':o.status==='done'?'Tamamlandı':'İptal'}</span></td>
+      <td>
+        <button class="order-mark-btn" onclick="markOrder('${o.id}','done')">✓ Tamam</button>
+        <button class="order-mark-btn" onclick="markOrder('${o.id}','cancel')">✕ İptal</button>
+      </td>
+    </tr>`).join('')}
+    </tbody></table>`;
+}
+
+async function markOrder(id, status){
+  const o = DB.orders.find(x=>x.id===id);
+  if(o){ o.status=status; await saveDB(); renderOrdersList(); }
+}
+
+// ============================================================
+// CUSTOMERS
+// ============================================================
+function renderCustomersList(){
+  const c = document.getElementById('customers-list');
+  if(!c) return;
+  const users = DB.users || [];
+  if(!users.length){ c.innerHTML='<p style="color:var(--text3);font-size:13px;padding:20px 0;">Henüz üye yok.</p>'; return; }
+  c.innerHTML = `<table class="orders-table">
+    <thead><tr><th>Ad Soyad</th><th>E-posta</th><th>Telefon</th><th>Kayıt</th><th>İndirim %</th><th>Durum</th><th>İşlem</th></tr></thead>
+    <tbody>${users.map(u=>`
+    <tr>
+      <td>${u.name||''}</td>
+      <td>${u.email||''}</td>
+      <td>${u.phone||'—'}</td>
+      <td>${u.date||'—'}</td>
+      <td><input type="number" min="0" max="50" value="${u.discount||0}" style="width:60px;background:var(--bg3);border:1px solid var(--bdr);color:var(--text);padding:4px 8px;font-family:'Outfit',sans-serif;font-size:12px;" onchange="setDiscount('${u.id}',this.value)"> %</td>
+      <td style="color:${u.blocked?'#e74c3c':'#2ecc71'}">${u.blocked?'🔴 Engelli':'✅ Aktif'}</td>
+      <td>
+        <button class="block-btn ${u.blocked?'unblock':'block'}" onclick="toggleBlock('${u.id}')">
+          ${u.blocked?'🔓 Engeli Kaldır':'🚫 Engelle'}
+        </button>
+      </td>
+    </tr>`).join('')}
+    </tbody></table>`;
+}
+
+async function toggleBlock(id){
+  const u = DB.users.find(x=>x.id===id);
+  if(!u) return;
+  u.blocked = !u.blocked;
+  await saveDB();
+  renderCustomersList();
+  notify(u.name+(u.blocked?' engellendi':' engeli kaldırıldı'), u.blocked?'err':'ok');
+}
+
+// ============================================================
+// THEME
+// ============================================================
+function applyTheme(name){
+  document.body.setAttribute('data-theme', name);
+  document.documentElement.setAttribute('data-theme', name);
+  DB.theme = name;
+  document.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('active'));
+  const tb = document.getElementById('tb-'+name);
+  if(tb) tb.classList.add('active');
+  updateThemePattern(name);
+  updateCorners(name);
+}
+
+async function setTheme(name){
+  applyTheme(name);
+  await saveDB(); // site_data'ya tüm DB ile kaydet
+  // site_settings'e de kaydet (realtime sync için)
+  if(sbClient){
+    await sbClient.from('site_settings').upsert({key:'theme', value:name}, {onConflict:'key'});
+  }
+  notify('Tema tüm cihazlara uygulandı ✓', 'info');
+}
+
+// Listen for theme changes from other devices
+if(sbClient){
+  sbClient.channel('theme-sync')
+    .on('postgres_changes',{event:'*',schema:'public',table:'site_settings',filter:'key=eq.theme'},
+      (payload)=>{ 
+        if(payload.new && payload.new.value){ 
+          applyTheme(payload.new.value);
+          notify('Tema güncellendi 🎨','info');
+        }
+      }
+    ).subscribe();
+  
+  // Load current theme from Supabase on startup
+  sbClient.from('site_settings').select('value').eq('key','theme').single()
+    .then(({data})=>{ if(data && data.value) applyTheme(data.value); });
+}
+
+// ============================================================
+// BRANCH ADD
+// ============================================================
+async function addBranch(){
+  const name = getVal('br-name').trim();
+  const addr = getVal('br-addr').trim();
+  if(!name||!addr){ notify('Şube adı ve adres gerekli', 'err'); return; }
+  const id = 'b'+uid();
+  DB.branches.push({id, name, addr, phone:'', email:'', hours:'12:00–23:00', weekend:'11:00–00:00'});
+  DB.menus[id] = defaultMenu();
+  await saveDB();
+  closeModal('branch-modal');
+  setVal('br-name',''); setVal('br-addr','');
+  renderBranchBtns();
+  renderBranchPublic();
+  notify(name+' eklendi ✓', 'ok');
+}
+
+// ============================================================
+// SECURITY
+// ============================================================
+async function changeAdminPass(){
+  const old = document.getElementById('sec-old').value;
+  const n1 = document.getElementById('sec-new').value;
+  const n2 = document.getElementById('sec-new2').value;
+  const err = document.getElementById('sec-err');
+  const ok = document.getElementById('sec-ok');
+  err.style.display='none'; ok.style.display='none';
+  if(!DB.adminPasswords.includes(old)){ showEl(err,'Mevcut şifre hatalı'); return; }
+  if(n1.length<6){ showEl(err,'Yeni şifre en az 6 karakter olmalı'); return; }
+  if(n1!==n2){ showEl(err,'Şifreler eşleşmiyor'); return; }
+  const idx = DB.adminPasswords.indexOf(old);
+  DB.adminPasswords[idx] = n1;
+  await saveDB();
+  showEl(ok,'Şifre değiştirildi ✓');
+  ['sec-old','sec-new','sec-new2'].forEach(id=>setVal(id,''));
+}
+
+async function addAdminPass(){
+  const pass = document.getElementById('new-admin-pass').value;
+  const ok = document.getElementById('new-admin-ok');
+  if(pass.length<6){ notify('Şifre en az 6 karakter olmalı', 'err'); return; }
+  if(DB.adminPasswords.includes(pass)){ notify('Bu şifre zaten mevcut', 'err'); return; }
+  DB.adminPasswords.push(pass);
+  await saveDB();
+  setVal('new-admin-pass','');
+  showEl(ok,'Yeni admin şifresi eklendi ✓');
+}
+
+// ============================================================
+// MODAL HELPERS
+// ============================================================
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('open'); });
+});
+
+function showEl(el, msg){ if(typeof el==='string') el=document.getElementById(el); if(el){el.textContent=msg;el.style.display='block';} }
+
+// ============================================================
+// NOTIFICATION
+// ============================================================
+let notifTimer;
+function notify(msg, type='ok'){
+  const el = document.getElementById('notif');
+  clearTimeout(notifTimer);
+  el.textContent = msg;
+  el.className = `show ${type}`;
+  notifTimer = setTimeout(()=>{ el.classList.remove('show'); }, 2800);
+}
+
+// ============================================================
+// CURSOR
+// ============================================================
+function initCursor(){ /* disabled */ }
+
+// ============================================================
+// SCROLL REVEAL
+// ============================================================
+function initReveal(){
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('on');obs.unobserve(e.target);} });
+  }, {threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+}
+
+// Apply saved theme
+setTheme(DB.theme||'dark');
+
+// ============================================================
+// FOUNDER
+// ============================================================
+function renderFounder(){
+  const f = DB.founder || {};
+  // Photo
+  const photoEl = document.getElementById('founder-photo-el');
+  if(photoEl){
+    if(f.img){
+      photoEl.innerHTML = `<img src="${f.img}" alt="${f.name}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+    } else {
+      photoEl.innerHTML = `<span style="font-size:80px;">👤</span>`;
+    }
+  }
+  setText('d-founder-badge', f.name || 'Fırat Yasin Öztürk');
+  setText('d-founder-name', f.name || 'Fırat Yasin Öztürk');
+  setText('d-founder-title', f.title || 'Fujimi Sushi & Wok — Kurucu & CEO');
+  // Bio için innerHTML kullan - satır atlamalarını <br> ile göster
+  const bioEl = document.getElementById('d-founder-bio');
+  if(bioEl){
+    const bioText = f.bio || 'Japon mutfağına olan tutkum, yıllar önce Tokyo sokaklarında başladı. Fujimi Sushi & Wok olarak her tabakta o anın ruhunu yaşatmaya çalışıyoruz.';
+    bioEl.innerHTML = bioText.replace(/\n/g, '<br>');
+  }
+  // Milestones
+  const ms = document.getElementById('d-milestones');
+  if(ms){
+    const items = f.milestones || [];
+    if(items.length){
+      ms.style.display = 'flex';
+      ms.innerHTML = items.map(m=>`
+        <div class="milestone">
+          <span class="milestone-year">${m.year}</span>
+          <span class="milestone-text">${m.text}</span>
+        </div>`).join('');
+    } else {
+      ms.style.display = 'none';
+      ms.innerHTML = '';
+    }
+  }
+  // Always show with defaults
+  const sec = document.getElementById('founder');
+  if(sec) sec.style.display = '';
+}
+
+function handleFounderImg(input){
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    // Resmi canvas ile sıkıştır — max 400px, kalite 0.7
+    const img = new Image();
+    img.onload = ()=>{
+      const canvas = document.createElement('canvas');
+      const max = 400;
+      let w = img.width, h = img.height;
+      if(w > max){ h = Math.round(h*max/w); w = max; }
+      if(h > max){ w = Math.round(w*max/h); h = max; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL('image/jpeg', 0.7);
+      DB.founder.img = compressed;
+      const prev = document.getElementById('founder-preview');
+      if(prev) prev.innerHTML = `<img src="${compressed}" style="width:100%;height:100%;object-fit:cover;">`;
+      // Sitedeki fotoğrafı da güncelle
+      renderFounder();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderMilestoneEditor(){
+  const items = (DB.founder.milestones || []);
+  document.getElementById('milestone-editor').innerHTML = items.map((m,i)=>`
+    <div style="display:grid;grid-template-columns:100px 1fr 32px;gap:10px;margin-bottom:8px;align-items:center;">
+      <div class="ap-f"><label>Yıl</label><input id="ms-year-${i}" value="${m.year}" placeholder="2015"></div>
+      <div class="ap-f"><label>Açıklama</label><input id="ms-text-${i}" value="${m.text}" placeholder="İlk şube açıldı"></div>
+      <button class="mei-del" style="align-self:flex-end;" onclick="delMilestone(${i})">✕</button>
+    </div>`).join('');
+}
+
+function addMilestone(){
+  if(!DB.founder.milestones) DB.founder.milestones = [];
+  DB.founder.milestones.push({year: new Date().getFullYear().toString(), text:''});
+  renderMilestoneEditor();
+}
+
+function delMilestone(i){
+  DB.founder.milestones.splice(i,1);
+  renderMilestoneEditor();
+}
+
+function loadFounderForm(){
+  const f = DB.founder || {};
+  setVal('f-founder-name', f.name||'');
+  setVal('f-founder-title', f.title||'');
+  setVal('f-founder-bio', f.bio||'');
+  const prev = document.getElementById('founder-preview');
+  if(prev && f.img) prev.innerHTML = `<img src="${f.img}" style="width:100%;height:100%;object-fit:cover;">`;
+  renderMilestoneEditor();
+}
+
+async function saveFounder(){
+  if(!DB.founder) DB.founder = {};
+  DB.founder.name = getVal('f-founder-name');
+  DB.founder.title = getVal('f-founder-title');
+  DB.founder.bio = getVal('f-founder-bio');
+  // Save milestones
+  const items = DB.founder.milestones || [];
+  items.forEach((m,i)=>{
+    m.year = getVal('ms-year-'+i);
+    m.text = getVal('ms-text-'+i);
+  });
+  DB.founder.milestones = items.filter(m=>m.year||m.text);
+  await saveDB();
+  renderFounder();
+  notify('Kurucu profili kaydedildi ✓', 'ok');
+}
+
+// Load founder data into admin form when tab opens
+
+// ============================================================
+// TEMA DESENLERİ + KÖŞE SÜSLEMELERİ
+// ============================================================
+
+// Sakura canvas animation
+// Corner SVGs for each theme
+function getCornerSVG(theme){
+  if(theme==='sakura') return `<svg width="240" height="240" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,220 Q40,180 70,130 Q95,90 120,50 Q140,20 155,5" stroke="#c2185b" stroke-width="2.5" fill="none" opacity="0.7"/>
+    <path d="M70,130 Q50,110 25,118" stroke="#ad1457" stroke-width="2" fill="none" opacity="0.6"/>
+    <path d="M100,90 Q80,72 58,80" stroke="#c2185b" stroke-width="1.8" fill="none" opacity="0.55"/>
+    <path d="M130,52 Q112,38 95,44" stroke="#ad1457" stroke-width="1.5" fill="none" opacity="0.5"/>
+    <g transform="translate(25,118)">
+      <ellipse cx="0" cy="-11" rx="6" ry="11" fill="#f48fb1" opacity="0.9" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-11" rx="6" ry="11" fill="#ec407a" opacity="0.85" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-11" rx="6" ry="11" fill="#f48fb1" opacity="0.9" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-11" rx="6" ry="11" fill="#ec407a" opacity="0.85" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-11" rx="6" ry="11" fill="#f48fb1" opacity="0.9" transform="rotate(288)"/>
+      <circle cx="0" cy="0" r="3.5" fill="#fff59d" opacity="1"/>
+    </g>
+    <g transform="translate(58,80)">
+      <ellipse cx="0" cy="-9" rx="5" ry="9" fill="#f06292" opacity="0.9" transform="rotate(36)"/>
+      <ellipse cx="0" cy="-9" rx="5" ry="9" fill="#f48fb1" opacity="0.85" transform="rotate(108)"/>
+      <ellipse cx="0" cy="-9" rx="5" ry="9" fill="#f06292" opacity="0.9" transform="rotate(180)"/>
+      <ellipse cx="0" cy="-9" rx="5" ry="9" fill="#f48fb1" opacity="0.85" transform="rotate(252)"/>
+      <ellipse cx="0" cy="-9" rx="5" ry="9" fill="#f06292" opacity="0.9" transform="rotate(324)"/>
+      <circle cx="0" cy="0" r="3" fill="#fff59d" opacity="1"/>
+    </g>
+    <g transform="translate(95,44)">
+      <ellipse cx="0" cy="-8" rx="4.5" ry="8" fill="#f48fb1" opacity="0.85" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-8" rx="4.5" ry="8" fill="#ec407a" opacity="0.8" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-8" rx="4.5" ry="8" fill="#f48fb1" opacity="0.85" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-8" rx="4.5" ry="8" fill="#ec407a" opacity="0.8" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-8" rx="4.5" ry="8" fill="#f48fb1" opacity="0.85" transform="rotate(288)"/>
+      <circle cx="0" cy="0" r="2.5" fill="#fff59d" opacity="1"/>
+    </g>
+    <g transform="translate(155,5)">
+      <ellipse cx="0" cy="-6" rx="3.5" ry="6" fill="#f06292" opacity="0.75" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-6" rx="3.5" ry="6" fill="#f48fb1" opacity="0.7" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-6" rx="3.5" ry="6" fill="#f06292" opacity="0.75" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-6" rx="3.5" ry="6" fill="#f48fb1" opacity="0.7" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-6" rx="3.5" ry="6" fill="#f06292" opacity="0.75" transform="rotate(288)"/>
+      <circle cx="0" cy="0" r="2" fill="#fff59d" opacity="1"/>
+    </g>
+    <ellipse cx="48" cy="145" rx="14" ry="6" fill="#388e3c" opacity="0.45" transform="rotate(-35,48,145)"/>
+    <ellipse cx="82" cy="108" rx="12" ry="5" fill="#2e7d32" opacity="0.4" transform="rotate(-50,82,108)"/>
+    <ellipse cx="112" cy="68" rx="10" ry="4" fill="#388e3c" opacity="0.35" transform="rotate(-40,112,68)"/>
+    <circle cx="10" cy="170" r="5" fill="#f48fb1" opacity="0.7"/>
+    <circle cx="12" cy="168" r="2" fill="#fff59d" opacity="0.9"/>
+    <circle cx="145" cy="20" r="4" fill="#f06292" opacity="0.6"/>
+    <circle cx="147" cy="18" r="1.8" fill="#fff59d" opacity="0.9"/>
+  </svg>`;
+  
+  if(theme==='ocean') return `<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,170 C40,150 80,170 120,155 C160,140 180,155 200,148" stroke="#0288d1" stroke-width="2" fill="none" opacity="0.5"/>
+    <path d="M0,185 C50,165 100,182 150,168 C175,161 190,170 200,165" stroke="#00bcd4" stroke-width="1.5" fill="none" opacity="0.4"/>
+    <path d="M0,198 C60,180 120,195 180,182 C190,179 196,183 200,181" stroke="#0288d1" stroke-width="1" fill="none" opacity="0.3"/>
+    <path d="M5,5 C5,80 40,120 5,200" stroke="#0288d1" stroke-width="1" fill="none" opacity="0.15"/>
+    <circle cx="25" cy="35" r="12" fill="none" stroke="#00bcd4" stroke-width="1.5" opacity="0.35"/>
+    <circle cx="25" cy="35" r="20" fill="none" stroke="#0288d1" stroke-width="1" opacity="0.2"/>
+    <circle cx="25" cy="35" r="28" fill="none" stroke="#00bcd4" stroke-width="0.5" opacity="0.12"/>
+    <ellipse cx="100" cy="90" rx="25" ry="12" fill="#0288d1" opacity="0.1" transform="rotate(-20,100,90)"/>
+    <circle cx="80" cy="85" r="3" fill="#00bcd4" opacity="0.5"/>
+    <circle cx="105" cy="78" r="2" fill="#00bcd4" opacity="0.4"/>
+    <circle cx="120" cy="92" r="2.5" fill="#0288d1" opacity="0.45"/>
+    <path d="M65,95 Q75,80 85,95 Q95,110 105,95" stroke="#00bcd4" stroke-width="1.5" fill="none" opacity="0.3"/>
+  </svg>`;
+
+  if(theme==='forest') return `<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <line x1="25" y1="200" x2="25" y2="70" stroke="#2e7d32" stroke-width="3" opacity="0.5"/>
+    <line x1="60" y1="200" x2="60" y2="55" stroke="#388e3c" stroke-width="2.5" opacity="0.45"/>
+    <line x1="90" y1="200" x2="90" y2="75" stroke="#2e7d32" stroke-width="2" opacity="0.35"/>
+    <polygon points="25,70 0,115 50,115" fill="#2e7d32" opacity="0.35"/>
+    <polygon points="25,45 -5,95 55,95" fill="#388e3c" opacity="0.3"/>
+    <polygon points="60,55 30,105 90,105" fill="#2e7d32" opacity="0.32"/>
+    <polygon points="60,30 25,85 95,85" fill="#388e3c" opacity="0.25"/>
+    <polygon points="90,75 65,120 115,120" fill="#2e7d32" opacity="0.28"/>
+    <ellipse cx="155" cy="40" rx="16" ry="7" fill="#8bc34a" opacity="0.25" transform="rotate(-35,155,40)"/>
+    <ellipse cx="170" cy="65" rx="13" ry="6" fill="#4caf50" opacity="0.22" transform="rotate(-50,170,65)"/>
+    <ellipse cx="160" cy="20" rx="11" ry="5" fill="#8bc34a" opacity="0.2" transform="rotate(-25,160,20)"/>
+    <ellipse cx="145" cy="60" rx="10" ry="4" fill="#66bb6a" opacity="0.2" transform="rotate(-45,145,60)"/>
+    <circle cx="155" cy="160" r="3" fill="#8bc34a" opacity="0.3"/>
+    <circle cx="170" cy="145" r="2" fill="#4caf50" opacity="0.25"/>
+  </svg>`;
+
+  if(theme==='luxury') return `<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="20,2 23.5,12 34,12 25.5,18.5 28.5,29 20,22.5 11.5,29 14.5,18.5 6,12 16.5,12" fill="#e8c84a" opacity="0.35"/>
+    <polygon points="170,165 172.5,172.5 180,172.5 174,177 176,184.5 170,180 164,184.5 166,177 160,172.5 167.5,172.5" fill="#b8860b" opacity="0.4"/>
+    <polygon points="8,155 10,162 17.5,162 12,166 14,173 8,169 2,173 4,166 -1.5,162 6,162" fill="#e8c84a" opacity="0.3"/>
+    <line x1="0" y1="0" x2="200" y2="200" stroke="#b8860b" stroke-width="0.8" opacity="0.12"/>
+    <line x1="200" y1="0" x2="0" y2="200" stroke="#e8c84a" stroke-width="0.8" opacity="0.1"/>
+    <rect x="4" y="4" width="50" height="50" fill="none" stroke="#b8860b" stroke-width="1" opacity="0.18" transform="rotate(15,29,29)"/>
+    <rect x="148" y="148" width="48" height="48" fill="none" stroke="#e8c84a" stroke-width="1" opacity="0.18" transform="rotate(15,172,172)"/>
+    <circle cx="100" cy="100" r="30" fill="none" stroke="#b8860b" stroke-width="0.6" opacity="0.1"/>
+    <circle cx="100" cy="100" r="45" fill="none" stroke="#e8c84a" stroke-width="0.4" opacity="0.08"/>
+    <text x="85" y="107" font-size="18" fill="#e8c84a" opacity="0.12" font-family="serif">✦</text>
+  </svg>`;
+
+  if(theme==='dark') return `<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 L30,0 L0,30 Z" fill="#c0392b" opacity="0.08"/>
+    <path d="M0,0 L60,0 L0,60 Z" fill="#d4a847" opacity="0.05"/>
+    <line x1="0" y1="50" x2="50" y2="0" stroke="#c0392b" stroke-width="0.8" opacity="0.2"/>
+    <line x1="0" y1="100" x2="100" y2="0" stroke="#d4a847" stroke-width="0.6" opacity="0.15"/>
+    <line x1="0" y1="150" x2="150" y2="0" stroke="#c0392b" stroke-width="0.4" opacity="0.1"/>
+    <circle cx="15" cy="15" r="3" fill="#c0392b" opacity="0.4"/>
+    <circle cx="40" cy="40" r="2" fill="#d4a847" opacity="0.35"/>
+    <circle cx="70" cy="15" r="1.5" fill="#c0392b" opacity="0.3"/>
+    <path d="M150,150 Q165,140 180,150 Q190,157 200,153" stroke="#c0392b" stroke-width="1" fill="none" opacity="0.2"/>
+    <rect x="160" y="160" width="30" height="30" fill="none" stroke="#d4a847" stroke-width="0.6" opacity="0.12" transform="rotate(45,175,175)"/>
+  </svg>`;
+
+  // light default
+  return `<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(22,22)">
+      <ellipse cx="0" cy="-12" rx="6" ry="12" fill="#c2185b" opacity="0.3" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-12" rx="6" ry="12" fill="#e91e63" opacity="0.28" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-12" rx="6" ry="12" fill="#c2185b" opacity="0.3" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-12" rx="6" ry="12" fill="#e91e63" opacity="0.28" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-12" rx="6" ry="12" fill="#c2185b" opacity="0.3" transform="rotate(288)"/>
+      <circle cx="0" cy="0" r="3.5" fill="#f9a825" opacity="0.5"/>
+    </g>
+    <g transform="translate(175,175)">
+      <ellipse cx="0" cy="-9" rx="4.5" ry="9" fill="#c2185b" opacity="0.25" transform="rotate(36)"/>
+      <ellipse cx="0" cy="-9" rx="4.5" ry="9" fill="#e91e63" opacity="0.22" transform="rotate(108)"/>
+      <ellipse cx="0" cy="-9" rx="4.5" ry="9" fill="#c2185b" opacity="0.25" transform="rotate(180)"/>
+      <ellipse cx="0" cy="-9" rx="4.5" ry="9" fill="#e91e63" opacity="0.22" transform="rotate(252)"/>
+      <ellipse cx="0" cy="-9" rx="4.5" ry="9" fill="#c2185b" opacity="0.25" transform="rotate(324)"/>
+      <circle cx="0" cy="0" r="3" fill="#f9a825" opacity="0.4"/>
+    </g>
+    <path d="M0,100 Q30,85 60,100 Q90,115 120,100 Q150,85 200,95" stroke="#c2185b" stroke-width="0.8" fill="none" opacity="0.18"/>
+    <circle cx="150" cy="30" r="2" fill="#9a6f00" opacity="0.3"/>
+    <circle cx="170" cy="50" r="1.5" fill="#c2185b" opacity="0.25"/>
+  </svg>`;
+}
+
+function updateCorners(theme){
+  const svg = getCornerSVG(theme);
+  ['corner-tl','corner-tr','corner-bl','corner-br'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=svg;
+  });
+}
+
+// ============================================================
+// MASA QR KODLARI
+// ============================================================
+function generateQRCodes(){
+  const count = parseInt(document.getElementById('qr-table-count').value) || 10;
+  const grid = document.getElementById('qr-grid');
+  grid.innerHTML = '';
+  const baseUrl = window.location.href.split('?')[0];
+  
+  for(let i=1; i<=count; i++){
+    const url = baseUrl + '?masa=' + i;
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'background:var(--bg2);border:1px solid var(--bdr);padding:16px;text-align:center;';
+    wrap.innerHTML = `
+      <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc2);margin-bottom:8px;">MASA ${i}</div>
+      <div id="qr-${i}" style="display:inline-block;background:#fff;padding:8px;"></div>
+      <div style="font-size:9px;color:var(--text3);margin-top:8px;letter-spacing:.08em;">fujimi · masa ${i}</div>`;
+    grid.appendChild(wrap);
+    
+    setTimeout(()=>{
+      try{
+        new QRCode(document.getElementById('qr-'+i), {
+          text: url, width:120, height:120,
+          colorDark:'#1a1a1a', colorLight:'#ffffff',
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }catch(e){ document.getElementById('qr-'+i).textContent = url; }
+    }, i*30);
+  }
+  notify('QR kodlar hazır!','ok');
+}
+
+function printQRCodes(){
+  const grid = document.getElementById('qr-grid');
+  if(!grid.children.length){ notify('Önce QR üretin','err'); return; }
+  const w = window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Fujimi — Masa QR</title>
+  <style>body{font-family:Arial,sans-serif;background:#fff;}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:20px;}
+  .card{border:1px solid #ddd;padding:16px;text-align:center;page-break-inside:avoid;}
+  .label{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#c0392b;margin-bottom:8px;}
+  .sub{font-size:9px;color:#999;margin-top:8px;}
+  @media print{.grid{gap:10px;padding:10px;}}</style></head>
+  <body><div class="grid">${grid.innerHTML}</div></body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(), 600);
+}
+
+// Sayfa açılışında ?masa=X parametresini oku
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const masa = params.get('masa');
+  if(masa){
+    window._autoMasa = parseInt(masa);
+    // Branch seçilince masa numarasını göster
+    const orig = window.selectBranch;
+  }
+})();
+
+// ============================================================
+// SES EFEKTLERİ
+// ============================================================
+const _AudioCtx = window.AudioContext || window.webkitAudioContext;
+let _actx = null;
+function _getACtx(){ if(!_actx) _actx = new _AudioCtx(); return _actx; }
+
+function playSoundOrder(){
+  // Sipariş: yukarı çıkan üç nota — şen, Japon tarzı
+  try{
+    const ac = _getACtx();
+    [[523,0],[659,0.12],[784,0.24],[1047,0.38]].forEach(([freq,t])=>{
+      const o=ac.createOscillator(), g=ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.type='sine'; o.frequency.value=freq;
+      g.gain.setValueAtTime(0,ac.currentTime+t);
+      g.gain.linearRampToValueAtTime(0.18,ac.currentTime+t+0.04);
+      g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+t+0.32);
+      o.start(ac.currentTime+t); o.stop(ac.currentTime+t+0.35);
+    });
+  }catch(e){}
+}
+
+function playSoundNotify(){
+  // Bildirim: iki nota — ping
+  try{
+    const ac = _getACtx();
+    [[880,0],[1100,0.15]].forEach(([freq,t])=>{
+      const o=ac.createOscillator(), g=ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.type='sine'; o.frequency.value=freq;
+      g.gain.setValueAtTime(0,ac.currentTime+t);
+      g.gain.linearRampToValueAtTime(0.14,ac.currentTime+t+0.03);
+      g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+t+0.28);
+      o.start(ac.currentTime+t); o.stop(ac.currentTime+t+0.3);
+    });
+  }catch(e){}
+}
+
+function playSoundError(){
+  // Hata: aşağı inen iki nota
+  try{
+    const ac = _getACtx();
+    [[330,0],[220,0.18]].forEach(([freq,t])=>{
+      const o=ac.createOscillator(), g=ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.type='sawtooth'; o.frequency.value=freq;
+      g.gain.setValueAtTime(0,ac.currentTime+t);
+      g.gain.linearRampToValueAtTime(0.08,ac.currentTime+t+0.03);
+      g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+t+0.22);
+      o.start(ac.currentTime+t); o.stop(ac.currentTime+t+0.25);
+    });
+  }catch(e){}
+}
+
+function playSoundFav(){
+  // Favori: tek tatlı nota
+  try{
+    const ac = _getACtx();
+    const o=ac.createOscillator(), g=ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    o.type='sine'; o.frequency.setValueAtTime(880,ac.currentTime);
+    o.frequency.exponentialRampToValueAtTime(1320,ac.currentTime+0.12);
+    g.gain.setValueAtTime(0,ac.currentTime);
+    g.gain.linearRampToValueAtTime(0.15,ac.currentTime+0.05);
+    g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.35);
+    o.start(ac.currentTime); o.stop(ac.currentTime+0.4);
+  }catch(e){}
+}
+
+// ============================================================
+// SİPARİŞ GEÇMİŞİ
+// ============================================================
+function openOrderHistory(){
+  if(!currentUser){ openAuth('login'); return; }
+  const body = document.getElementById('order-hist-body');
+  const subtitle = document.getElementById('order-hist-subtitle');
+  
+  // DB.orders'dan bu kullanıcıya ait siparişler
+  const myOrders = (DB.orders || [])
+    .filter(o => (o.user_phone||o.userPhone||'') === currentUser.phone || (o.user_name||o.userName||'') === currentUser.name)
+    .slice(0, 10);
+  
+  subtitle.textContent = myOrders.length 
+    ? `${myOrders.length} sipariş — ${currentUser.name}` 
+    : currentUser.name;
+  
+  if(!myOrders.length){
+    body.innerHTML = '<div class="order-hist-empty">Henüz sipariş vermediniz.<br><span style="font-size:20px;margin-top:8px;display:block;">🍣</span></div>';
+    openModal('order-hist-modal');
+    return;
+  }
+  
+  body.innerHTML = myOrders.map(o => {
+    const itemList = (o.items||[]).map(i=>`${i.name} <span style="color:var(--acc2)">${getJapaneseName(i.name)}</span> ×${i.qty}`).join(' · ');
+    const statusClass = o.status === 'new' ? 'new' : 'done';
+    const statusTxt = o.status === 'new' ? '🔴 Hazırlanıyor' : '✅ Teslim Edildi';
+    return `
+    <div class="order-hist-item">
+      <div class="order-hist-head">
+        <div style="display:flex;flex-direction:column;gap:2px;">
+          <span class="order-hist-branch">${o.branch_name || '—'}</span>
+          <span class="order-hist-date">${o.date || ''}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="order-hist-total">₺${o.total}</span>
+          <span class="order-hist-status ${statusClass}">${statusTxt}</span>
+        </div>
+      </div>
+      <div class="order-hist-items">${itemList}</div>
+      ${o.address ? `<div style="font-size:10px;color:var(--text3);">📍 ${o.address}</div>` : ''}
+    </div>`;
+  }).join('');
+  
+  openModal('order-hist-modal');
+}
+
+// ============================================================
+// FAVORİLER
+// ============================================================
+function getFavs(){
+  if(!currentUser) return [];
+  const u = DB.users.find(u=>u.phone===currentUser.phone);
+  return (u && u.favs) ? u.favs : [];
+}
+
+function isFav(itemId){
+  return getFavs().includes(itemId);
+}
+
+async function toggleFav(itemId){
+  if(!currentUser){ openAuth('login'); notify('Favoriler için giriş yapın','err'); return; }
+  const u = DB.users.find(u=>u.phone===currentUser.phone);
+  if(!u) return;
+  if(!u.favs) u.favs = [];
+  if(u.favs.includes(itemId)){
+    u.favs = u.favs.filter(f=>f!==itemId);
+    playSoundNotify();
+  } else {
+    u.favs.push(itemId);
+    playSoundFav();
+    notify('Favorilere eklendi ♥','ok');
+  }
+  currentUser = u;
+  await saveDB();
+  renderMenuGrid();
+  renderFmGrid();
+  renderFavSection();
+}
+
+function renderFavSection(){
+  const sec = document.getElementById('fav-section');
+  if(!sec) return;
+  if(!currentUser){ sec.style.display='none'; return; }
+  const favIds = getFavs();
+  if(!favIds.length){ sec.style.display='none'; return; }
+  sec.style.display='block';
+  // Tüm şubelerden favori ürünleri topla
+  const allItems = Object.values(DB.menus||{}).flat();
+  const favItems = favIds.map(id=>allItems.find(i=>i.id===id)).filter(Boolean);
+  if(!favItems.length){ sec.style.display='none'; return; }
+  document.getElementById('fav-grid').innerHTML = favItems.map(item=>`
+    <div class="mcard">
+      <div class="mcard-img">${item.img?`<img src="${item.img}" alt="${item.name}">`:(item.emoji||'🍣')}</div>
+      <div class="mcard-body">
+        <div class="mcard-info">
+          <p class="mcard-cat">${item.cat}</p>
+          <h3 class="mcard-name">${item.name}</h3>
+          <p class="mcard-desc">${item.desc}</p>
+        </div>
+        <div class="mcard-foot">
+          <div><div class="mcard-price">₺${item.price}</div><div class="mcard-unit">${item.unit}</div></div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <button class="fav-btn active" onclick="toggleFav('${item.id}')">♥</button>
+            <button class="add-to-cart" onclick="addToCart('${item.id}')">+ Ekle</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ============================================================
+// SUPABASE - SİPARİŞ
+// ============================================================
+async function placeOrder(){
+  if(!currentUser){ notify('Giriş yapın','err'); return; }
+  if(!cart.length){ notify('Sepet boş','err'); return; }
+  if(currentUser.blocked){ notify('Hesabınız engellenmiştir','err'); return; }
+  const addr = document.getElementById('cart-address').value.trim();
+  if(!addr){ notify('Lütfen adres girin','err'); return; }
+  const br = getBranch(selectedBranch);
+  // Apply discount
+  const discount = currentUser.discount || 0;
+  const subtotal = cart.reduce((s,c)=>s+parseInt(c.price)*c.qty,0);
+  const total = Math.round(subtotal * (1 - discount/100));
+  const order = {
+    user_name: currentUser.name,
+    user_phone: currentUser.phone,
+    branch_name: br?br.name:'?',
+    items: cart,
+    total: total,
+    address: addr,
+    status: 'new',
+    date: new Date().toLocaleString('tr-TR'),
+  };
+  if(sbClient){ 
+    const {error}=await sbClient.from('orders').insert(order); 
+    if(error) console.error('Sipariş hatası:', JSON.stringify(error)); 
+  }
+  const localOrder={id:uid(),...order,branchId:selectedBranch};
+  DB.orders.unshift(localOrder); await saveDB();
+  cart=[]; updateCartBtn(); closeModal('cart-modal');
+  playSoundOrder(); notify('Siparişiniz alındı! 🎉'+(discount?` (%${discount} indirim uygulandı)`:''), 'ok');
+}
+
+// ============================================================
+// REZERVASYON
+// ============================================================
+async function submitReservation(){
+  const fname=document.getElementById('res-fname').value.trim();
+  const lname=document.getElementById('res-lname').value.trim();
+  const phone=document.getElementById('res-phone').value.trim();
+  const date=document.getElementById('res-date').value;
+  const time=document.getElementById('res-time').value;
+  const guests=document.getElementById('res-guests').value;
+  const branch=document.getElementById('res-branch').value;
+  const note=document.getElementById('res-note').value.trim();
+  const msg=document.getElementById('res-msg');
+  if(!fname||!lname){msg.textContent='Ad ve soyad gerekli.';return;}
+  if(!phone){msg.textContent='Telefon gerekli.';return;}
+  if(!date||!time){msg.textContent='Tarih ve saat seçin.';return;}
+  if(!guests){msg.textContent='Kişi sayısı seçin.';return;}
+  if(!branch){msg.textContent='Şube seçin.';return;}
+  const reservation={
+    full_name: fname+' '+lname,
+    phone: phone,
+    date: date,
+    time: time,
+    guests: guests,
+    branch: branch,
+    note: note,
+    status: 'pending',
+    created_at: new Date().toISOString()
+  };
+  if(sbClient){ 
+    const {error}=await sbClient.from('reservations').insert(reservation); 
+    if(error){
+      console.error('Rezervasyon hatası:', JSON.stringify(error));
+      msg.textContent='Hata: '+error.message;
+      msg.style.color='#ffcccc';
+      return;
+    }
+  }
+  msg.textContent='✓ Rezervasyon talebiniz alındı! En kısa sürede '+phone+' numaranızı arayacağız.';
+  ['res-fname','res-lname','res-phone','res-date','res-time','res-note'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['res-guests','res-branch'].forEach(id=>{const el=document.getElementById(id);if(el)el.selectedIndex=0;});
+}
+
+// ============================================================
+// ADMİN - YÜKLEMELERİ
+// ============================================================
+async function loadOrdersFromSupabase(){
+  if(!sbClient) return;
+  const br=getBranch(adminBranch); if(!br) return;
+  const {data,error}=await sbClient.from('orders').select('*').eq('branch_name',br.name).order('created_at',{ascending:false});
+  if(error){console.error(error);return;}
+  const c=document.getElementById('orders-list'); if(!c) return;
+  if(!data||!data.length){c.innerHTML='<p style="color:var(--text3);font-size:13px;padding:20px 0;">Henüz sipariş yok.</p>';return;}
+  c.innerHTML=`<table class="orders-table"><thead><tr><th>Müşteri</th><th>Telefon</th><th>Ürünler</th><th>Toplam</th><th>Adres</th><th>Tarih</th><th>Durum</th></tr></thead><tbody>${data.map(o=>`<tr><td>${o.user_name||''}</td><td>${o.user_phone||''}</td><td>${(o.items||[]).map(i=>i.name+' x'+i.qty).join(', ')}</td><td>${o.total}₺</td><td>${o.address||''}</td><td>${o.date||''}</td><td style="color:${o.status==='new'?'#e74c3c':'#2ecc71'}">${o.status==='new'?'🔴 Yeni':'✅ Tamam'}</td></tr>`).join('')}</tbody></table>`;
+}
+
+async function loadReservationsFromSupabase(){
+  if(!sbClient) return;
+  const br=getBranch(adminBranch); if(!br) return;
+  const {data,error}=await sbClient.from('reservations').select('*').eq('branch',br.name).order('created_at',{ascending:false});
+  if(error){console.error(error);return;}
+  const c=document.getElementById('reservations-list'); if(!c) return;
+  if(!data||!data.length){c.innerHTML='<p style="color:var(--text3);font-size:13px;padding:20px 0;">Henüz rezervasyon yok.</p>';return;}
+  c.innerHTML=`<table class="orders-table"><thead><tr><th>Ad Soyad</th><th>Telefon</th><th>Tarih</th><th>Saat</th><th>Kişi</th><th>Not</th><th>Durum</th></tr></thead><tbody>${data.map(r=>`<tr><td>${r.full_name||''}</td><td>${r.phone||''}</td><td>${r.date||''}</td><td>${r.time||''}</td><td>${r.guests||''}</td><td>${r.note||'-'}</td><td style="color:${r.status==='pending'?'#f39c12':'#2ecc71'}">${r.status==='pending'?'⏳ Bekliyor':'✅ Onaylandı'}</td></tr>`).join('')}</tbody></table>`;
+}
+
+// ============================================================
+// BİLDİRİM BADGE
+// ============================================================
+// ============================================================
+// SAKURA ZİL SESİ + BADGE SİSTEMİ
+// ============================================================
+let alarmIntervals = {};
+let alarmContexts = {};
+
+function playAlarmSound(id){
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    alarmContexts[id] = ctx;
+
+    function playNote(freq, startTime, duration, vol){
+      // Ana ton - flüt/shamisen gibi sine wave
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, startTime);
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(vol||0.3, startTime + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(startTime); osc.stop(startTime + duration);
+
+      // Üst harmonik - çan/koto etkisi
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(freq * 2.01, startTime);
+      gain2.gain.setValueAtTime(0, startTime);
+      gain2.gain.linearRampToValueAtTime((vol||0.3)*0.35, startTime + 0.01);
+      gain2.gain.exponentialRampToValueAtTime(0.001, startTime + duration * 0.5);
+      osc2.connect(gain2); gain2.connect(ctx.destination);
+      osc2.start(startTime); osc2.stop(startTime + duration);
+    }
+
+    function playSakura(){
+      if(!alarmIntervals[id]) return;
+      const now = ctx.currentTime;
+      // Sakura Sakura melodisi - Japon pentatonik gamı
+      // Do Re Mi(b) Sol La Do (Miyako-bushi skalası)
+      const notes = [
+        // Giriş: iki tekrar eden nota
+        {f: 659.25, t: 0.00, d: 0.55, v: 0.28}, // E5
+        {f: 659.25, t: 0.45, d: 0.55, v: 0.28}, // E5
+        // Motif devamı
+        {f: 698.46, t: 0.90, d: 0.45, v: 0.25}, // F5
+        {f: 659.25, t: 1.35, d: 0.55, v: 0.28}, // E5
+        {f: 659.25, t: 1.90, d: 0.55, v: 0.28}, // E5
+        {f: 698.46, t: 2.35, d: 0.45, v: 0.25}, // F5
+        {f: 659.25, t: 2.80, d: 0.70, v: 0.30}, // E5
+        // İnen kısım
+        {f: 587.33, t: 3.50, d: 0.45, v: 0.22}, // D5
+        {f: 523.25, t: 3.95, d: 0.45, v: 0.22}, // C5
+        {f: 493.88, t: 4.40, d: 0.45, v: 0.20}, // B4
+        {f: 523.25, t: 4.85, d: 0.90, v: 0.25}, // C5 - bitiş uzun
+      ];
+      notes.forEach(n => playNote(n.f, now + n.t, n.d + 0.25, n.v));
+    }
+
+    playSakura();
+    // 6 saniyede bir tekrar (melodinin süresi ~5.75s)
+    alarmIntervals[id] = setInterval(playSakura, 6200);
+  } catch(e){ console.log('Ses çalınamadı:', e); }
+}
+
+function stopAlarm(id){
+  if(alarmIntervals[id]){ clearInterval(alarmIntervals[id]); alarmIntervals[id] = null; }
+  if(alarmContexts[id]){ try{ alarmContexts[id].close(); }catch(e){} alarmContexts[id] = null; }
+}
+
+function showBadge(id, text){
+  if(!isAdmin) return; // Sadece admin girişli sayfada göster
+  stopAlarm(id);
+  // Pulse animasyon stili
+  if(!document.getElementById('badge-style')){
+    const s = document.createElement('style');
+    s.id = 'badge-style';
+    s.textContent = '@keyframes badgePulse{0%,100%{transform:scale(1);box-shadow:0 4px 24px rgba(192,57,43,.5);}50%{transform:scale(1.05);box-shadow:0 6px 32px rgba(192,57,43,.9);}} @keyframes sakuraPetal{0%,100%{opacity:.7}50%{opacity:1}}';
+    document.head.appendChild(s);
+  }
+  let b = document.getElementById(id);
+  if(!b){
+    b = document.createElement('div');
+    b.id = id;
+    const top = id === 'order-badge' ? '12' : '64';
+    b.style.cssText = `position:fixed;top:${top}px;right:12px;z-index:9999;background:linear-gradient(135deg,#c0392b,#922b21);color:#fff;padding:13px 18px;font-size:12px;font-family:Outfit,sans-serif;font-weight:600;border-radius:6px;cursor:pointer;box-shadow:0 4px 24px rgba(192,57,43,.6);display:flex;align-items:center;gap:10px;animation:badgePulse 1s ease-in-out infinite;border:1px solid rgba(255,255,255,.15);`;
+    document.body.appendChild(b);
+  }
+  b.innerHTML = `<span style="font-size:16px;">🌸</span> ${text} <span onclick="event.stopPropagation();stopAlarm('${id}');this.parentElement.remove();" style="background:rgba(255,255,255,.2);border-radius:4px;padding:2px 8px;font-size:10px;letter-spacing:.08em;margin-left:4px;">✓ TAMAM</span>`;
+  b.onclick = () => { stopAlarm(id); b.remove(); if(isAdmin) openAdminPanel(); };
+  playAlarmSound(id);
+}
+
+// ============================================================
+// ÜYELERİ GÖSTER + İNDİRİM (alias)
+// ============================================================
+
+async function setDiscount(userId,val){
+  const u=DB.users.find(x=>x.id===userId);
+  if(u){u.discount=parseInt(val)||0;await saveDB();notify('İndirim güncellendi ✓','ok');}
+}
+
+// Realtime
+if(sbClient){
+  sbClient.channel('orders-rt').on('postgres_changes',{event:'INSERT',schema:'public',table:'orders'},()=>showBadge('order-badge','🛒 Yeni sipariş!')).subscribe();
+  sbClient.channel('res-rt').on('postgres_changes',{event:'INSERT',schema:'public',table:'reservations'},()=>showBadge('res-badge','📅 Yeni rezervasyon!')).subscribe();
+}
+
+// ============================================================
+// TEMA DESENLERİ
+// ============================================================
+function updateThemePattern(theme){
+  const canvas = document.getElementById('sakura-canvas');
+  const pattern = document.getElementById('theme-pattern');
+  
+  // Clear existing patterns
+  pattern.innerHTML = '';
+  canvas.style.opacity = '0';
+  updateCorners(theme);
+  
+  // Her temada yaprak animasyonu — canvas her zaman görünür
+  canvas.style.opacity = '1';
+  
+  // Arka plan desenleri tema bazlı
+  if(theme === 'ocean'){
+    pattern.innerHTML = getOceanPattern();
+  } else if(theme === 'forest'){
+    pattern.innerHTML = getForestPattern();
+  } else if(theme === 'luxury'){
+    pattern.innerHTML = getLuxuryPattern();
+  } else if(theme === 'dark'){
+    pattern.innerHTML = getDarkPattern();
+  } else if(theme === 'light'){
+    pattern.innerHTML = getLightPattern();
+  } else {
+    pattern.innerHTML = '';
+  }
+}
+
+function getThemePetalColors(theme){
+  const palettes = {
+    sakura:  ['#f48fb1','#f06292','#e91e63','#fce4ec','#ff80ab','#f8bbd9'],
+    dark:    ['#c0392b','#e74c3c','#922b21','#f1948a','#cb4335','#ff6b6b'],
+    light:   ['#e8c84a','#d4a847','#f39c12','#fdebd0','#f8c471','#f0e68c'],
+    ocean:   ['#0288d1','#00bcd4','#4fc3f7','#b3e5fc','#29b6f6','#81d4fa'],
+    forest:  ['#2e7d32','#66bb6a','#a5d6a7','#43a047','#81c784','#c8e6c9'],
+    luxury:  ['#b8860b','#e8c84a','#ffd700','#daa520','#f0d060','#fffacd'],
+  };
+  return palettes[theme] || palettes.sakura;
+}
+
+function initSakuraCanvas(){
+  const canvas = document.getElementById('sakura-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  
+  const petals = [];
+  const petalCount = 55;
+  
+  function buildPetals(){
+    const theme = document.body.getAttribute('data-theme') || 'dark';
+    const colors = getThemePetalColors(theme);
+    petals.length = 0;
+    for(let i=0;i<petalCount;i++){
+      petals.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        size: Math.random()*13+5,
+        speed: Math.random()*1.2+0.4,
+        wind: Math.random()*0.7-0.35,
+        rotation: Math.random()*Math.PI*2,
+        rotSpeed: (Math.random()-0.5)*0.04,
+        opacity: Math.random()*0.55+0.25,
+        color: colors[Math.floor(Math.random()*colors.length)],
+        wobble: Math.random()*Math.PI*2,
+        wobbleSpeed: Math.random()*0.02+0.005,
+      });
+    }
+  }
+  buildPetals();
+  
+  function drawPetal(ctx, x, y, size, rotation, color, opacity){
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rotation);
+    ctx.globalAlpha = opacity;
+    ctx.beginPath();
+    ctx.moveTo(0, -size);
+    ctx.bezierCurveTo(size*0.55, -size*0.6, size*0.55, size*0.6, 0, size);
+    ctx.bezierCurveTo(-size*0.55, size*0.6, -size*0.55, -size*0.6, 0, -size);
+    ctx.fillStyle = color;
+    ctx.fill();
+    // Parlama efekti
+    ctx.globalAlpha = opacity * 0.3;
+    ctx.beginPath();
+    ctx.ellipse(-size*0.15, -size*0.3, size*0.18, size*0.35, -0.4, 0, Math.PI*2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+    ctx.restore();
+  }
+  
+  let animId;
+  let lastTheme = document.body.getAttribute('data-theme');
+  
+  function animate(){
+    // Tema değişince renkleri güncelle
+    const currentTheme = document.body.getAttribute('data-theme');
+    if(currentTheme !== lastTheme){ buildPetals(); lastTheme = currentTheme; }
+    
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    petals.forEach(p=>{
+      p.wobble += p.wobbleSpeed;
+      p.y += p.speed;
+      p.x += p.wind + Math.sin(p.wobble)*0.6;
+      p.rotation += p.rotSpeed;
+      if(p.y > canvas.height + 20){ p.y=-20; p.x=Math.random()*canvas.width; }
+      if(p.x > canvas.width+20){ p.x=-20; }
+      if(p.x < -20){ p.x=canvas.width+20; }
+      drawPetal(ctx, p.x, p.y, p.size, p.rotation, p.color, p.opacity);
+    });
+    animId = requestAnimationFrame(animate);
+  }
+  animate();
+  
+  window.addEventListener('resize',()=>{
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    buildPetals();
+  });
+}
+
+function getOceanPattern(){
+  return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;">
+    <defs><pattern id="wave-p" x="0" y="0" width="200" height="80" patternUnits="userSpaceOnUse">
+      <path d="M0,40 C50,20 100,60 200,40" stroke="#0288d1" stroke-width="1.5" fill="none" opacity="0.4"/>
+      <path d="M0,55 C50,35 100,75 200,55" stroke="#00bcd4" stroke-width="1" fill="none" opacity="0.25"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#wave-p)"/>
+    <circle cx="5%" cy="15%" r="3" fill="#00bcd4" opacity="0.5"/>
+    <circle cx="92%" cy="25%" r="2" fill="#0288d1" opacity="0.4"/>
+    <circle cx="15%" cy="80%" r="4" fill="#00bcd4" opacity="0.3"/>
+    <circle cx="85%" cy="70%" r="3" fill="#0288d1" opacity="0.4"/>
+    <text x="3%" y="12%" font-size="32" opacity="0.08" fill="#00bcd4">🐟</text>
+    <text x="88%" y="90%" font-size="40" opacity="0.06" fill="#0288d1">🌊</text>
+  </svg>`;
+}
+
+function getForestPattern(){
+  return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;">
+    <defs><pattern id="leaf-p" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+      <ellipse cx="60" cy="30" rx="8" ry="18" fill="#2e7d32" opacity="0.15" transform="rotate(-20,60,30)"/>
+      <ellipse cx="90" cy="80" rx="6" ry="14" fill="#8bc34a" opacity="0.12" transform="rotate(30,90,80)"/>
+      <ellipse cx="20" cy="90" rx="7" ry="16" fill="#2e7d32" opacity="0.1" transform="rotate(10,20,90)"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#leaf-p)"/>
+    <text x="2%" y="8%" font-size="40" opacity="0.06">🌿</text>
+    <text x="90%" y="95%" font-size="50" opacity="0.05">🌳</text>
+    <text x="88%" y="10%" font-size="30" opacity="0.07">🍃</text>
+    <text x="3%" y="92%" font-size="35" opacity="0.06">🎋</text>
+  </svg>`;
+}
+
+function getLuxuryPattern(){
+  return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;">
+    <defs><pattern id="gold-p" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+      <rect x="38" y="0" width="4" height="80" fill="#b8860b" opacity="0.08"/>
+      <rect x="0" y="38" width="80" height="4" fill="#b8860b" opacity="0.06"/>
+      <circle cx="40" cy="40" r="3" fill="#e8c84a" opacity="0.12"/>
+      <circle cx="0" cy="0" r="2" fill="#b8860b" opacity="0.1"/>
+      <circle cx="80" cy="80" r="2" fill="#b8860b" opacity="0.1"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#gold-p)"/>
+    <text x="1%" y="6%" font-size="50" opacity="0.05">✦</text>
+    <text x="91%" y="96%" font-size="50" opacity="0.05">✦</text>
+    <text x="2%" y="96%" font-size="30" opacity="0.06">◈</text>
+    <text x="93%" y="6%" font-size="30" opacity="0.06">◈</text>
+  </svg>`;
+}
+
+function getDarkPattern(){
+  return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;">
+    <defs><pattern id="dark-p" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+      <circle cx="30" cy="30" r="1" fill="#c0392b" opacity="0.5"/>
+      <circle cx="0" cy="0" r="0.5" fill="#d4a847" opacity="0.4"/>
+      <circle cx="60" cy="60" r="0.5" fill="#d4a847" opacity="0.4"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#dark-p)"/>
+    <text x="1%" y="5%" font-size="60" opacity="0.04">🍜</text>
+    <text x="90%" y="97%" font-size="60" opacity="0.04">🥢</text>
+  </svg>`;
+}
+
+function getLightPattern(){
+  return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;">
+    <defs><pattern id="light-p" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse">
+      <circle cx="25" cy="25" r="1" fill="#c0392b" opacity="0.3"/>
+      <circle cx="0" cy="0" r="0.5" fill="#9a6f00" opacity="0.25"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#light-p)"/>
+    <text x="1%" y="5%" font-size="50" opacity="0.05">🌸</text>
+    <text x="91%" y="97%" font-size="50" opacity="0.04">🍱</text>
+  </svg>`;
+}
+
+// ============================================================
+// INSTAGRAM PHOTOS
+// ============================================================
+function handleInstaUpload(input, handle){
+  const files = Array.from(input.files);
+  if(!files.length) return;
+  if(!DB.instagram) DB.instagram = {fujimisushi:[], cheffiratyasin:[]};
+  if(!DB.instagram[handle]) DB.instagram[handle] = [];
+  let processed = 0;
+  files.forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const canvas = document.createElement('canvas');
+        const size = 600;
+        let w = img.width, h = img.height;
+        // Square crop center
+        const min = Math.min(w, h);
+        const sx = (w - min) / 2, sy = (h - min) / 2;
+        canvas.width = size; canvas.height = size;
+        canvas.getContext('2d').drawImage(img, sx, sy, min, min, 0, 0, size, size);
+        const compressed = canvas.toDataURL('image/jpeg', 0.78);
+        DB.instagram[handle].push({id: uid(), src: compressed, date: new Date().toISOString()});
+        processed++;
+        if(processed === files.length){
+          renderInstaAdminGrids();
+          notify(processed + ' fotoğraf eklendi', 'ok');
+        }
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
+function renderInstaAdminGrids(){
+  if(!DB.instagram) DB.instagram = {fujimisushi:[], cheffiratyasin:[]};
+  ['fujimisushi','cheffiratyasin'].forEach(handle=>{
+    const grid = document.getElementById('ig-grid-'+handle);
+    if(!grid) return;
+    const photos = DB.instagram[handle] || [];
+    if(!photos.length){
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:20px;font-size:12px;color:var(--text3);font-weight:200;">Henüz fotoğraf yok. Yukarıdaki butona tıklayın.</div>';
+      return;
+    }
+    grid.innerHTML = photos.map(p=>`
+      <div class="insta-photo-item">
+        <img src="${p.src}" alt="">
+        <button class="ig-del" onclick="deleteInstaPhoto('${handle}','${p.id}')">✕</button>
+      </div>`).join('');
+  });
+}
+
+function deleteInstaPhoto(handle, id){
+  if(!DB.instagram || !DB.instagram[handle]) return;
+  DB.instagram[handle] = DB.instagram[handle].filter(p => p.id !== id);
+  renderInstaAdminGrids();
+  renderInstaPublic();
+  notify('Fotoğraf silindi', 'info');
+}
+
+async function saveInstaPhotos(){
+  await saveDB();
+  renderInstaPublic();
+  notify('Instagram fotoğrafları kaydedildi ✓', 'ok');
+}
+
+function renderInstaPublic(){
+  if(!DB.instagram) return;
+  ['fujimisushi','cheffiratyasin'].forEach(handle=>{
+    const grid = document.getElementById('pub-ig-'+handle);
+    if(!grid) return;
+    const photos = (DB.instagram[handle] || []).slice(0, 6);
+    if(!photos.length){
+      grid.innerHTML = '<div class="insta-photo-empty">Henüz fotoğraf yok</div>';
+      return;
+    }
+    grid.innerHTML = photos.map(p=>`
+      <div class="insta-photo-item">
+        <img src="${p.src}" alt="@${handle}">
+      </div>`).join('');
+  });
+}
+
+// Init on load
+updateThemePattern(DB.theme||'dark');
+
+</script>
+<!-- ===== INSTAGRAM ===== -->
+
+<!-- ===== FAVORİLERİM ===== -->
+<section class="fav-section" id="fav-section" style="display:none;">
+  <div class="fav-title">Favorilerim <span>♥</span></div>
+  <div class="fav-grid" id="fav-grid"></div>
+</section>
+
+<section class="insta-section">
+  <div class="insta-section-title">Bizi <span>Instagram</span>'da Takip Edin</div>
+  <div class="insta-accounts" id="insta-public-grids">
+
+    <div class="insta-account">
+      <div class="insta-account-left">
+        <div class="insta-logo"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ig-g" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f09433"/><stop offset="25%" stop-color="#e6683c"/><stop offset="50%" stop-color="#dc2743"/><stop offset="75%" stop-color="#cc2366"/><stop offset="100%" stop-color="#bc1888"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="url(#ig-g)"/><circle cx="12" cy="12" r="4.5" stroke="white" stroke-width="1.5" fill="none"/><circle cx="17.5" cy="6.5" r="1" fill="white"/></svg></div>
+        <span class="insta-handle">@fujimisushi</span>
+        <a href="https://instagram.com/fujimisushi" target="_blank" rel="noopener noreferrer" class="insta-follow">Takip Et</a>
+      </div>
+      <div id="pub-ig-fujimisushi" class="insta-photo-grid"></div>
+    </div>
+
+    <div class="insta-account">
+      <div class="insta-account-left">
+        <div class="insta-logo"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ig-g2" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f09433"/><stop offset="25%" stop-color="#e6683c"/><stop offset="50%" stop-color="#dc2743"/><stop offset="75%" stop-color="#cc2366"/><stop offset="100%" stop-color="#bc1888"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="url(#ig-g2)"/><circle cx="12" cy="12" r="4.5" stroke="white" stroke-width="1.5" fill="none"/><circle cx="17.5" cy="6.5" r="1" fill="white"/></svg></div>
+        <span class="insta-handle">@cheffiratyasin</span>
+        <a href="https://instagram.com/cheffiratyasin" target="_blank" rel="noopener noreferrer" class="insta-follow">Takip Et</a>
+      </div>
+      <div id="pub-ig-cheffiratyasin" class="insta-photo-grid"></div>
+    </div>
+
+  </div>
+</section>
+
+</body>
+</html>
